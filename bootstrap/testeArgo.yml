@@ -64,8 +64,6 @@ spec:
   parentRefs:
     - name: GAPI
       namespace: infrab
-      sectionName: GAPI3
-      port: 443
   rules:
     - matches:
         - path:
