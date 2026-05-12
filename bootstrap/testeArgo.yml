@@ -105,7 +105,8 @@ spec:
             service.kubernetes.io/aws-load-balancer-ssl-cert: "arn:aws:acm:us-east-1:952133486861:certificate/56661e02-bfe7-4a8e-b1a7-d28802ab04ac"
             service.kubernetes.io/aws-load-balancer-backend-protocol: "http"
             service.kubernetes.io/aws-load-balancer-ssl-ports: "443"
-            service.kubernetes.io/aws-load-balancer-subnets: "subnet-0d46f3120911807f2, subnet-0615e08fd6f9ba780"
+            # ATENÇÃO: IDs atualizados e sem espaços após a vírgula
+            service.kubernetes.io/aws-load-balancer-subnets: "subnet-0a09864e318002ad4,subnet-065808868dc422952"
             service.kubernetes.io/aws-load-balancer-security-groups: "sg-084cb4381759d331a"
             service.kubernetes.io/aws-load-balancer-additional-resource-tags: "Name=ALBeks,managed-by=struct8,State=State8,user=Ricardo"
         env:
@@ -118,7 +119,8 @@ spec:
       prune: true
       selfHeal: true
     syncOptions:
-      - CreateNamespace=true
+      - CreateNamespace=false
+
 
 ---
 # File: templates/referencegrant-grant-infrab-to-argocd1.yaml
