@@ -109,6 +109,7 @@ spec:
             service.kubernetes.io/aws-load-balancer-subnets: "subnet-0a09864e318002ad4,subnet-065808868dc422952"
             service.kubernetes.io/aws-load-balancer-security-groups: "sg-084cb4381759d331a"
             service.kubernetes.io/aws-load-balancer-additional-resource-tags: "Name=ALBeks,managed-by=struct8,State=State8,user=Ricardo"
+            service.kubernetes.io/aws-load-balancer-nlb-target-type: "ip" 
         env:
           database: "off"
           router_flavor: expressions
