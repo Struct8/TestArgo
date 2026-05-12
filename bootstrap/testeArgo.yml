@@ -1,4 +1,4 @@
-# 1. Namespace onde o tráfego será gerenciado
+# File: namespace-infrab.yaml
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -12,67 +12,17 @@ metadata:
     argocd.argoproj.io/sync-wave: "-20"
 
 ---
-# 2. Aplicação que instala o Kong via Helm Chart
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: kong1
-  namespace: argocd1
-  labels:
-    app.kubernetes.io/name: Kong1
-    app.kubernetes.io/managed-by: struct8
-    app.kubernetes.io/instance: State8
-    cloudman.io/user: Ricardo
-  annotations:
-    argocd.argoproj.io/sync-wave: "-10"
-spec:
-  destination:
-    namespace: infrab
-    server: "https://kubernetes.default.svc"
-  project: default
-  source:
-    targetRevision: 2.44.0
-    helm:
-      valuesObject:
-        ingressController:
-          enabled: true
-          installCRDs: false
-          gatewayFeatureGates: "Gateway=true"
-        proxy:
-          type: LoadBalancer
-          annotations:
-            service.kubernetes.io/aws-load-balancer-type: "external"
-            service.kubernetes.io/aws-load-balancer-scheme: "internet-facing"
-            service.kubernetes.io/aws-load-balancer-ssl-cert: "arn:aws:acm:us-east-1:952133486861:certificate/46380d36-86ad-44c5-883b-e22e8d756cef"
-            service.kubernetes.io/aws-load-balancer-backend-protocol: "http"
-            service.kubernetes.io/aws-load-balancer-ssl-ports: "443"
-            service.kubernetes.io/aws-load-balancer-subnets: "subnet-0d46f3120911807f2, subnet-0615e08fd6f9ba780"
-            service.kubernetes.io/aws-load-balancer-security-groups: "sg-011f22875913b5dd5"
-            service.kubernetes.io/aws-load-balancer-additional-resource-tags: "Name=ALBeks,managed-by=struct8,State=State8,user=Ricardo"
-        env:
-          database: "off"
-          router_flavor: expressions
-    repoURL: "https://charts.konghq.com"
-    chart: kong
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
-    syncOptions:
-      - CreateNamespace=true
-
----
-# 3. Definição do Gateway (Kong)
+# File: templates/gateway-gapi.yaml
 apiVersion: gateway.networking.k8s.io/v1beta1
 kind: Gateway
 metadata:
   name: GAPI
-  namespace: infrab
   labels:
     app.kubernetes.io/name: GAPI
     app.kubernetes.io/managed-by: struct8
     app.kubernetes.io/instance: State8
     cloudman.io/user: Ricardo
+  namespace: infrab
   annotations:
     argocd.argoproj.io/sync-wave: "5"
 spec:
@@ -89,7 +39,7 @@ spec:
             kind: HTTPRoute
 
 ---
-# 4. Rota para o Argo CD
+# File: templates/httproute-route2.yaml
 apiVersion: gateway.networking.k8s.io/v1beta1
 kind: HTTPRoute
 metadata:
@@ -121,7 +71,57 @@ spec:
     - argo.k8s.cloudman.pro
 
 ---
-# 5. Permissão para o Gateway acessar o serviço em outro namespace
+# File: application-kong1.yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kong1
+  namespace: argocd1
+  labels:
+    app.kubernetes.io/name: Kong1
+    app.kubernetes.io/managed-by: struct8
+    app.kubernetes.io/instance: State8
+    cloudman.io/user: Ricardo
+  annotations:
+    argocd.argoproj.io/sync-wave: "-10"
+spec:
+  destination:
+    namespace: infrab
+    server: "https://kubernetes.default.svc"
+  project: default
+  source:
+    targetRevision: 2.44.0
+    helm:
+      valuesObject:
+        ingressController:
+          enabled: true
+          installCRDs: false
+          gatewayFeatureGates: "Gateway=true"
+        proxy:
+          type: LoadBalancer
+          annotations:
+            service.kubernetes.io/aws-load-balancer-type: "external"
+            service.kubernetes.io/aws-load-balancer-scheme: "internet-facing"
+            service.kubernetes.io/aws-load-balancer-ssl-cert: "arn:aws:acm:us-east-1:952133486861:certificate/56661e02-bfe7-4a8e-b1a7-d28802ab04ac"
+            service.kubernetes.io/aws-load-balancer-backend-protocol: "http"
+            service.kubernetes.io/aws-load-balancer-ssl-ports: "443"
+            service.kubernetes.io/aws-load-balancer-subnets: "subnet-0d46f3120911807f2, subnet-0615e08fd6f9ba780"
+            service.kubernetes.io/aws-load-balancer-security-groups: "sg-084cb4381759d331a"
+            service.kubernetes.io/aws-load-balancer-additional-resource-tags: "Name=ALBeks,managed-by=struct8,State=State8,user=Ricardo"
+        env:
+          database: "off"
+          router_flavor: expressions
+    repoURL: "https://charts.konghq.com"
+    chart: kong
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+
+---
+# File: templates/referencegrant-grant-infrab-to-argocd1.yaml
 apiVersion: gateway.networking.k8s.io/v1beta1
 kind: ReferenceGrant
 metadata:
