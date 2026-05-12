@@ -152,3 +152,10 @@ spec:
   to:
     - group: ""
       kind: Service
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: GatewayClass
+metadata:
+  name: kong # Deve bater exatamente com o 'gatewayClassName' do seu Gateway
+spec:
+  controllerName: konghq.com/ingress-controller
