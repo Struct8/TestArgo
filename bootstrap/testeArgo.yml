@@ -123,9 +123,9 @@ spec:
             servicePort: 80
             containerPort: 8000
           tls:
-            servicePort: 443 # Porta externa do Service/NLB
-            containerPort: 8000 # PORTA INTERNA DO KONG (Mudamos de 8443 para 8000)
-            overrideServiceTargetPort: 8000
+            servicePort: 443
+            containerPort: 8443 # VOLTE PARA 8443 para evitar o erro 'duplicate listen'
+            overrideServiceTargetPort: 8000 # ESTA LINHA faz a mágica de mandar o 443 para o 8000
         env:
           database: "off"
           router_flavor: expressions
