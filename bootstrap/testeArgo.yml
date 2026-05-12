@@ -37,7 +37,15 @@ spec:
         kinds:
           - group: gateway.networking.k8s.io
             kind: HTTPRoute
-
+    - name: https
+      port: 443 # O tráfego entra pela porta 443 do Service
+      protocol: HTTP # Mas chega no Pod como HTTP (NLB abriu o SSL)
+      allowedRoutes:
+        namespaces:
+          from: All
+        kinds:
+          - group: gateway.networking.k8s.io
+            kind: HTTPRoute
 ---
 # File: templates/httproute-route2.yaml
 apiVersion: gateway.networking.k8s.io/v1beta1
@@ -57,7 +65,7 @@ spec:
     - name: GAPI
       namespace: infrab
       sectionName: GAPI3
-      port: 80
+      port: 443
   rules:
     - matches:
         - path:
