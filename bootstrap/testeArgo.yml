@@ -117,6 +117,7 @@ spec:
           tls:
             servicePort: 443 # Porta externa do Service/NLB
             containerPort: 8000 # PORTA INTERNA DO KONG (Mudamos de 8443 para 8000)
+            overrideServiceTargetPort: 8000
         env:
           database: "off"
           router_flavor: expressions
