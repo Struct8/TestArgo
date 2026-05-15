@@ -84,9 +84,10 @@ spec:
         ingressController:
           enabled: true
           installCRDs: false
-          gatewayFeatureGates: "Gateway=true"
-          gatewayDiscovery:
-            enabled: true
+          # Força a criação do RBAC do Gateway API (Bypass no problema do ArgoCD)
+          rbac:
+            gatewayAPI:
+              enabled: true
         proxy:
           type: ClusterIP
         env:
