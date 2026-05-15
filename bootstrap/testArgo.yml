@@ -14,7 +14,7 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "5"
 spec:
-  gatewayClassName: kong
+  gatewayClassName: kong-custom
   listeners:
     - name: gapi3
       port: 80
@@ -129,9 +129,10 @@ spec:
 apiVersion: gateway.networking.k8s.io/v1
 kind: GatewayClass
 metadata:
-  name: kong
+  name: kong-custom
   annotations:
+    # Esta anotação é obrigatória para KIC instalado via Helm (sem Operator)
     konghq.com/gatewayclass-unmanaged: "true"
 spec:
-  # Controlador correto esperado pelo KIC
+  # Controlador Gateway API padrão das versões mais recentes do KIC
   controllerName: konghq.com/kic-gateway-controller
