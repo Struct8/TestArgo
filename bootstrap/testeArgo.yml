@@ -13,7 +13,7 @@ metadata:
     app.kubernetes.io/instance: State8
     cloudman.io/user: Ricardo
 spec:
-  controllerName: konghq.com/kic-gateway-controller/kong
+  controllerName: konghq.com/kic-gateway-controller
 
 ---
 # File: templates/gateway-gapi.yaml
@@ -96,7 +96,7 @@ spec:
         ingressController:
           enabled: true
           installCRDs: false
-          gatewayAPIControllerName: konghq.com/kic-gateway-controller/kong
+          gatewayAPIControllerName: konghq.com/kic-gateway-controller
           rbac:
             gatewayAPI:
               enabled: true
