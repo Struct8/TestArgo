@@ -61,7 +61,6 @@ spec:
     - name: gapi
       namespace: infrab
       sectionName: gapi3
-      port: 80
   rules:
     - matches:
         - path:
@@ -104,6 +103,9 @@ spec:
           gatewayFeatureGates: "Gateway=true"
         proxy:
           type: ClusterIP
+          annotations:
+            konghq.com/gateway-name: gapi
+            konghq.com/gateway-namespace: infrab
         env:
           database: "off"
           router_flavor: expressions
