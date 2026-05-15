@@ -13,7 +13,7 @@ metadata:
     app.kubernetes.io/instance: State8
     cloudman.io/user: Ricardo
 spec:
-  controllerName: konghq.com/kic-gateway-controller
+  controllerName: konghq.com/kic-gateway-controller-kong
 
 ---
 # File: templates/gateway-gapi.yaml
@@ -41,6 +41,35 @@ spec:
         kinds:
           - group: gateway.networking.k8s.io
             kind: HTTPRoute
+---
+# File: templates/httproute-kong-manager.yaml
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: kong-manager-route
+  namespace: infrab
+  labels:
+    app.kubernetes.io/name: kong-manager
+    app.kubernetes.io/managed-by: struct8
+    app.kubernetes.io/instance: State8
+    cloudman.io/user: Ricardo
+  annotations:
+    argocd.argoproj.io/sync-wave: "5"
+spec:
+  parentRefs:
+    - name: gapi
+      namespace: infrab
+      sectionName: gapi3 # Referenciando o listener da porta 80 do seu Gateway
+  hostnames:
+    - kong.k8s.cloudman.pro
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: kong-manager # Nome padrão gerado pelo chart quando fullnameOverride é "kong"
+          port: 8002        # Porta padrão do Kong Manager (HTTP)
 
 ---
 # File: templates/httproute-route2.yaml
@@ -72,35 +101,7 @@ spec:
           port: 80
   hostnames:
     - argo.k8s.cloudman.pro
----
-# File: templates/httproute-kong-manager.yaml
-apiVersion: gateway.networking.k8s.io/v1
-kind: HTTPRoute
-metadata:
-  name: kong-manager-route
-  namespace: infrab
-  labels:
-    app.kubernetes.io/name: kong-manager
-    app.kubernetes.io/managed-by: struct8
-    app.kubernetes.io/instance: State8
-    cloudman.io/user: Ricardo
-  annotations:
-    argocd.argoproj.io/sync-wave: "5"
-spec:
-  parentRefs:
-    - name: gapi
-      namespace: infrab
-      sectionName: gapi3 # Referenciando o listener da porta 80 do seu Gateway
-  hostnames:
-    - kong.k8s.cloudman.pro
-  rules:
-    - matches:
-        - path:
-            type: PathPrefix
-            value: /
-      backendRefs:
-        - name: kong-manager # Nome padrão gerado pelo chart quando fullnameOverride é "kong"
-          port: 8002        # Porta padrão do Kong Manager (HTTP)
+
 ---
 # File: application-kong.yaml
 apiVersion: argoproj.io/v1alpha1
@@ -124,7 +125,7 @@ spec:
         ingressController:
           enabled: true
           installCRDs: false
-          gatewayAPIControllerName: konghq.com/kic-gateway-controller
+          gatewayAPIControllerName: konghq.com/kic-gateway-controller-kong
           rbac:
             gatewayAPI:
               enabled: true
@@ -132,8 +133,8 @@ spec:
         proxy:
           type: ClusterIP
           annotations:
-            konghq.com/gateway-name: gapi
-            konghq.com/gateway-namespace: infrab
+            konghq.com/gateway-name: "gapi"
+            konghq.com/gateway-namespace: "infrab"
         manager:
           enabled: true
           type: ClusterIP
