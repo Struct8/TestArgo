@@ -130,5 +130,5 @@ kind: GatewayClass
 metadata:
   name: kong
 spec:
-  controllerName: konghq.com/ingress-controller
+  controllerName: ingress-controller.konghq.com/ingress-controller
 
