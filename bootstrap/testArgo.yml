@@ -129,6 +129,8 @@ apiVersion: gateway.networking.k8s.io/v1
 kind: GatewayClass
 metadata:
   name: kong
+  annotations:
+    konghq.com/gatewayclass-unmanaged: "true"
 spec:
-  controllerName: ingress-controller.konghq.com/ingress-controller
-
+  # Controlador correto esperado pelo KIC
+  controllerName: konghq.com/kic-gateway-controller
