@@ -41,15 +41,16 @@ spec:
         kinds:
           - group: gateway.networking.k8s.io
             kind: HTTPRoute
+
 ---
-# File: templates/httproute-kong-manager.yaml
+# File: templates/httproute-route-kong.yaml
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
-  name: kong-manager-route
+  name: route-kong
   namespace: infrab
   labels:
-    app.kubernetes.io/name: kong-manager
+    app.kubernetes.io/name: route-kong
     app.kubernetes.io/managed-by: struct8
     app.kubernetes.io/instance: State8
     cloudman.io/user: Ricardo
@@ -59,17 +60,18 @@ spec:
   parentRefs:
     - name: gapi
       namespace: infrab
-      sectionName: gapi3 # Referenciando o listener da porta 80 do seu Gateway
-  hostnames:
-    - kong.k8s.cloudman.pro
+      sectionName: gapi3
   rules:
     - matches:
         - path:
             type: PathPrefix
             value: /
       backendRefs:
-        - name: kong-manager # Nome padrão gerado pelo chart quando fullnameOverride é "kong"
-          port: 8002        # Porta padrão do Kong Manager (HTTP)
+        - name: kong-manager
+          namespace: infrab
+          port: 8002
+  hostnames:
+    - kong.k8s.cloudman.pro
 
 ---
 # File: templates/httproute-route2.yaml
@@ -122,6 +124,9 @@ spec:
     targetRevision: 2.44.0
     helm:
       valuesObject:
+        manager:
+          enabled: true
+          type: ClusterIP
         ingressController:
           enabled: true
           installCRDs: false
@@ -131,12 +136,6 @@ spec:
               enabled: true
           gatewayFeatureGates: "Gateway=true"
         proxy:
-          type: ClusterIP
-          annotations:
-            konghq.com/gateway-name: "gapi"
-            konghq.com/gateway-namespace: "infrab"
-        manager:
-          enabled: true
           type: ClusterIP
         env:
           database: "off"
