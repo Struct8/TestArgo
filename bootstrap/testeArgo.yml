@@ -199,7 +199,7 @@ spec:
     spec:
       containers:
         - name: game-2048
-          image: alexwhen/docker-2048 # Imagem popular do 2048 no Docker Hub
+          image: jsonsong/docker-2048 # Imagem popular do 2048 no Docker Hub
           ports:
             - containerPort: 80
 
