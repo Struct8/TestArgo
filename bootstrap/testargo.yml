@@ -44,7 +44,7 @@ spec:
       dnsPolicy: ClusterFirst
       terminationGracePeriodSeconds: 30
       containers:
-        - image: jsonsong/docker-2048
+        - image: public.ecr.aws/l6m2t8p7/docker-2048:latest
           imagePullPolicy: Always
           name: game-2048
           stdin: false
