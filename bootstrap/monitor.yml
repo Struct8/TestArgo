@@ -81,17 +81,20 @@ metadata:
 spec:
   project: default
   source:
-    # Usando o repositório Helm oficial do Prometheus
     repoURL: "https://prometheus-community.github.io/helm-charts"
     chart: prometheus
-    targetRevision: "25.11.0" # Versão do Chart
+    targetRevision: "25.11.0" 
     helm:
-      # Desabilitando componentes extras para manter leve (opcional)
       valuesObject:
         alertmanager:
           enabled: false
         pushgateway:
           enabled: false
+        # --- ADICIONE ESTE BLOCO ABAIXO ---
+        server:
+          persistentVolume:
+            enabled: false
+        # ----------------------------------
   destination:
     server: "https://kubernetes.default.svc"
     namespace: monitoringtest
@@ -101,7 +104,6 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
-
 ---
 # File: application-graph1.yaml
 apiVersion: argoproj.io/v1alpha1
