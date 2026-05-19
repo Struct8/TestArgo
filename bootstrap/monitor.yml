@@ -67,18 +67,18 @@ metadata:
   name: grafana-instance
   namespace: monitoringtest
   labels:
-    instance: "primary"
+    instance: "primary" # Esta label é usada pelo Datasource para achar o Grafana
 spec:
+  # ADICIONE ESTE BLOCO:
+  instanceSelector:
+    matchLabels:
+      instance: "primary" 
   config:
     log:
       mode: "console"
     auth.anonymous:
-      enabled: "true" # Tente colocar como string se der erro de validação
+      enabled: true
       org_role: "Admin"
-  # Adicione este bloco vazio se o erro for "deployment is required"
-  deployment:
-    spec: {}
-
 
 ---
 # CONEXÃO AUTOMÁTICA (Datasource)
