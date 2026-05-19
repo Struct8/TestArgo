@@ -73,8 +73,12 @@ spec:
     log:
       mode: "console"
     auth.anonymous:
-      enabled: true
+      enabled: "true" # Tente colocar como string se der erro de validação
       org_role: "Admin"
+  # Adicione este bloco vazio se o erro for "deployment is required"
+  deployment:
+    spec: {}
+
 
 ---
 # CONEXÃO AUTOMÁTICA (Datasource)
