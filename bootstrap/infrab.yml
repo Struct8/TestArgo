@@ -231,7 +231,7 @@ spec:
           type: ClusterIP
         ingressController:
           enabled: true
-          installCRDs: false
+          installCRDs: true
           gatewayAPIControllerName: konghq.com/kic-gateway-controller
           rbac:
             gatewayAPI:
