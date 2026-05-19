@@ -70,16 +70,16 @@ spec:
       app.kubernetes.io/name: game-2048
 
 ---
-# File: templates/gatewayclass-kong-class.yaml
+# File: templates/gatewayclass-production-class.yaml
 apiVersion: gateway.networking.k8s.io/v1
 kind: GatewayClass
 metadata:
-  name: kong-class
+  name: production-class
   annotations:
     konghq.com/gatewayclass-unmanaged: "true"
     argocd.argoproj.io/sync-wave: "0"
   labels:
-    app.kubernetes.io/name: kong-class
+    app.kubernetes.io/name: production-class
     app.kubernetes.io/managed-by: struct8
     app.kubernetes.io/instance: State8
     cloudman.io/user: Ricardo
@@ -101,9 +101,9 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "5"
 spec:
-  gatewayClassName: kong-class
+  gatewayClassName: production-class
   listeners:
-    - name: gapi3
+    - name: g-api3
       port: 80
       protocol: HTTP
       allowedRoutes:
@@ -131,7 +131,7 @@ spec:
   parentRefs:
     - name: gapi
       namespace: infrab
-      sectionName: gapi3
+      sectionName: g-api3
   rules:
     - matches:
         - path:
@@ -162,7 +162,7 @@ spec:
   parentRefs:
     - name: gapi
       namespace: infrab
-      sectionName: gapi3
+      sectionName: g-api3
   rules:
     - matches:
         - path:
@@ -176,14 +176,14 @@ spec:
     - game2048.k8s.cloudman.pro
 
 ---
-# File: templates/httproute-route3-kong.yaml
+# File: templates/httproute-route3-production.yaml
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
-  name: route3-kong
+  name: route3-production
   namespace: infrab
   labels:
-    app.kubernetes.io/name: route3-kong
+    app.kubernetes.io/name: route3-production
     app.kubernetes.io/managed-by: struct8
     app.kubernetes.io/instance: State8
     cloudman.io/user: Ricardo
@@ -193,28 +193,28 @@ spec:
   parentRefs:
     - name: gapi
       namespace: infrab
-      sectionName: gapi3
+      sectionName: g-api3
   rules:
     - matches:
         - path:
             type: PathPrefix
             value: /
       backendRefs:
-        - name: kong-manager
+        - name: production-manager
           namespace: infrab
           port: 8002
   hostnames:
     - kong.k8s.cloudman.pro
 
 ---
-# File: application-kong.yaml
+# File: application-production.yaml
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: kong
+  name: production
   namespace: argocd1
   labels:
-    app.kubernetes.io/name: kong
+    app.kubernetes.io/name: production
     app.kubernetes.io/managed-by: struct8
     app.kubernetes.io/instance: State8
     cloudman.io/user: Ricardo
@@ -231,7 +231,7 @@ spec:
           type: ClusterIP
         ingressController:
           enabled: true
-          installCRDs: true
+          installCRDs: false
           gatewayAPIControllerName: konghq.com/kic-gateway-controller
           rbac:
             gatewayAPI:
@@ -257,7 +257,7 @@ spec:
           enabled: true
           http:
             enabled: true
-        fullnameOverride: kong
+        fullnameOverride: production
     repoURL: "https://charts.konghq.com"
     chart: kong
   destination:
@@ -292,13 +292,20 @@ spec:
   to:
     - group: ""
       kind: Service
+
 ---
+# File: templates/kongclusterplugin-prometheus-plugin-production.yaml
 apiVersion: configuration.konghq.com/v1
 kind: KongClusterPlugin
 metadata:
-  name: prometheus-plugin
+  name: prometheus-plugin-production
   annotations:
-    kubernetes.io/ingress.class: kong
+    kubernetes.io/ingress.class: "production"
+    argocd.argoproj.io/sync-wave: "-5"
   labels:
     global: "true"
-plugin: prometheus # <--- REMOVA O 'spec:' E COLOQUE AQUI NA RAIZ
+    app.kubernetes.io/name: production_prometheus_plugin
+    app.kubernetes.io/managed-by: struct8
+    app.kubernetes.io/instance: State8
+    cloudman.io/user: Ricardo
+plugin: prometheus
