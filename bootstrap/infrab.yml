@@ -176,6 +176,37 @@ spec:
     - game2048.k8s.cloudman.pro
 
 ---
+# File: templates/httproute-route3-kong.yaml
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: route3-kong
+  namespace: infrab
+  labels:
+    app.kubernetes.io/name: route3-kong
+    app.kubernetes.io/managed-by: struct8
+    app.kubernetes.io/instance: State8
+    cloudman.io/user: Ricardo
+  annotations:
+    argocd.argoproj.io/sync-wave: "5"
+spec:
+  parentRefs:
+    - name: gapi
+      namespace: infrab
+      sectionName: gapi3
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: kong-proxy
+          namespace: infrab
+          port: 8002
+  hostnames:
+    - kong.k8s.cloudman.pro
+
+---
 # File: application-kong.yaml
 apiVersion: argoproj.io/v1alpha1
 kind: Application
