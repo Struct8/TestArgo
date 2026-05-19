@@ -1,1 +1,163 @@
 
+---
+# File: templates/httproute-monitoring-graph1.yaml
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: monitoring-graph1
+  namespace: monitoringtest
+  labels:
+    app.kubernetes.io/name: monitoring-graph1
+    app.kubernetes.io/managed-by: struct8
+    app.kubernetes.io/instance: State10
+    cloudman.io/user: Ricardo
+  annotations:
+    argocd.argoproj.io/sync-wave: "5"
+spec:
+  parentRefs:
+    - name: gapi
+      namespace: infrab
+      sectionName: gapi3
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: graph1-grafana
+          namespace: monitoringtest
+          port: 80
+  hostnames:
+    - grafana.k8s.cloudman.pro
+
+---
+# File: templates/httproute-monitoring-prometheus.yaml
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: monitoring-prometheus
+  namespace: monitoringtest
+  labels:
+    app.kubernetes.io/name: monitoring-prometheus
+    app.kubernetes.io/managed-by: struct8
+    app.kubernetes.io/instance: State10
+    cloudman.io/user: Ricardo
+  annotations:
+    argocd.argoproj.io/sync-wave: "5"
+spec:
+  parentRefs:
+    - name: gapi
+      namespace: infrab
+      sectionName: gapi3
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: prometheus-server
+          namespace: monitoringtest
+          port: 80
+  hostnames:
+    - prometheus.k8s.cloudman.pro
+
+---
+# File: application-graph1.yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: Graph1
+  namespace: argocd1
+  labels:
+    app.kubernetes.io/name: Graph1
+    app.kubernetes.io/managed-by: struct8
+    app.kubernetes.io/instance: State10
+    cloudman.io/user: Ricardo
+  annotations:
+    argocd.argoproj.io/sync-wave: "-10"
+spec:
+  project: default
+  source:
+    targetRevision: 7.3.7
+    repoURL: "https://grafana.github.io/helm-charts"
+    chart: grafana
+    helm:
+      valuesObject:
+        # Configura o Prometheus como Datasource Default
+        datasources:
+          datasources.yaml:
+            apiVersion: 1
+            datasources:
+            - name: Prometheus
+              type: prometheus
+              url: http://prometheus-server.monitoringtest.svc.cluster.local:80
+              access: proxy
+              isDefault: true
+        # Configura o provider para carregar dashboards automaticamente
+        dashboardProviders:
+          dashboardproviders.yaml:
+            apiVersion: 1
+            providers:
+            - name: 'default'
+              orgId: 1
+              folder: ''
+              type: file
+              disableDeletion: false
+              editable: true
+              options:
+                path: /var/lib/grafana/dashboards/default
+        # Injeta o Dashboard Oficial do Kong
+        dashboards:
+          default:
+            kong-dashboard:
+              gnetId: 7424
+              revision: 14
+              datasource: Prometheus
+  destination:
+    namespace: monitoringtest
+    server: "https://kubernetes.default.svc"
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+
+---
+# File: application-prometheus.yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: prometheus
+  namespace: argocd1
+  labels:
+    app.kubernetes.io/name: prometheus
+    app.kubernetes.io/managed-by: struct8
+    app.kubernetes.io/instance: State10
+    cloudman.io/user: Ricardo
+  annotations:
+    argocd.argoproj.io/sync-wave: "-10"
+spec:
+  project: default
+  source:
+    targetRevision: 25.11.0
+    repoURL: "https://prometheus-community.github.io/helm-charts"
+    chart: prometheus
+    helm:
+      valuesObject:
+        alertmanager:
+          enabled: false
+        pushgateway:
+          enabled: false
+        server:
+          persistentVolume:
+            enabled: false
+  destination:
+    namespace: monitoringtest
+    server: "https://kubernetes.default.svc"
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
