@@ -298,8 +298,7 @@ kind: KongClusterPlugin
 metadata:
   name: prometheus-plugin
   annotations:
-    kubernetes.io/ingress.class: kong # ou o nome da sua classe se for diferente
+    kubernetes.io/ingress.class: kong
   labels:
-    global: "true" # Isso ativa o plugin para todas as rotas automaticamente
-spec:
-  plugin: prometheus
+    global: "true"
+plugin: prometheus # <--- REMOVA O 'spec:' E COLOQUE AQUI NA RAIZ
