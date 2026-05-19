@@ -200,7 +200,7 @@ spec:
             type: PathPrefix
             value: /
       backendRefs:
-        - name: kong-proxy
+        - name: kong-manager
           namespace: infrab
           port: 8002
   hostnames:
