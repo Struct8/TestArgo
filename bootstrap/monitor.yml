@@ -72,10 +72,9 @@ spec:
   config:
     log:
       mode: "console"
-    auth.anonymous:
-      enabled: true
+    "auth.anonymous":     # Coloque entre aspas
+      enabled: "true"     # Coloque entre aspas (deve ser String, não booleano)
       org_role: "Admin"
-
 ---
 # CONEXÃO AUTOMÁTICA (Datasource)
 apiVersion: grafana.integreatly.org/v1beta1
