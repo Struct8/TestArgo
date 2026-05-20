@@ -71,10 +71,6 @@ metadata:
   labels:
     instance: "primary" # Esta label é usada pelo Datasource para achar o Grafana
 spec:
-  # ADICIONE ESTE BLOCO:
-  instanceSelector:
-    matchLabels:
-      instance: "primary" 
   config:
     log:
       mode: "console"
