@@ -304,6 +304,7 @@ metadata:
   name: prometheus-plugin-kong
   annotations:
     argocd.argoproj.io/sync-wave: "-5"
+    kubernetes.io/ingress.class: kong
   labels:
     global: "true" # ⬅️ ISSO APLICA O PLUGIN EM TODO O DATA PLANE AUTOMATICAMENTE
 plugin: prometheus
