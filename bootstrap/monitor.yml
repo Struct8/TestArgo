@@ -169,17 +169,6 @@ spec:
     id: 15662
     revision: 1
 ---
-apiVersion: grafana.integreatly.org/v1beta1
-kind: GrafanaDashboard
-metadata:
-  name: dashboard-kong-proxy
-  namespace: monitoringtest
-spec:
-  instanceSelector:
-    matchLabels:
-      instance: "primary"
-  # ⬇️ Substituímos o grafanaCom pelo link direto do JSON oficial no GitHub da Kong
-  url: "https://raw.githubusercontent.com/kong/kong/master/plugins/prometheus/grafana/kong-official.json"
 
 
 
