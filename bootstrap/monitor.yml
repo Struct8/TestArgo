@@ -42,6 +42,7 @@ spec:
   resources:
     requests:
       memory: 1Gi
+  serviceMonitorNamespaceSelector: {}
   serviceMonitorSelector:
     matchLabels:
       monitor: "true" # O gerador deve colocar essa label nos ServiceMonitors
