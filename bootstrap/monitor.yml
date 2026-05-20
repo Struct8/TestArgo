@@ -77,7 +77,7 @@ spec:
     log:
       mode: "console"
     auth.anonymous:
-      enabled: true
+      enabled: "true" # Precisa ser uma string
       org_role: "Admin"
 
 ---
