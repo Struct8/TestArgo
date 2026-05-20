@@ -299,13 +299,19 @@ spec:
 ---
 # File: templates/kongclusterplugin-prometheus-plugin-kong.yaml
 apiVersion: configuration.konghq.com/v1
-kind: KongClusterPlugin
+kind: KongClusterPlugin # Voltamos para ClusterPlugin
 metadata:
   name: prometheus-plugin-kong
   annotations:
     argocd.argoproj.io/sync-wave: "-5"
   labels:
-    global: "true" # <-- ISSO FAZ O PLUGIN APLICAR EM TODAS AS ROTAS AUTOMATICAMENTE
+    global: "true" # ⬅️ ISSO APLICA O PLUGIN EM TODO O DATA PLANE AUTOMATICAMENTE
 plugin: prometheus
+config: # ⬅️ BLOCO OBRIGATÓRIO NAS VERSÕES NOVAS DO KONG
+  status_code_metrics: true
+  bandwidth_metrics: true
+  latency_metrics: true
+  upstream_health_metrics: true
+
 
 
