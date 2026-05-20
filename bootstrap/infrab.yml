@@ -299,15 +299,12 @@ spec:
 ---
 # File: templates/kongclusterplugin-prometheus-plugin-kong.yaml
 apiVersion: configuration.konghq.com/v1
-kind: KongClusterPlugin
+kind: KongPlugin # Alterado de KongClusterPlugin para KongPlugin
 metadata:
   name: prometheus-plugin-kong
+  namespace: infrab # Adicionado explicitamente no mesmo namespace do Kong
   annotations:
     argocd.argoproj.io/sync-wave: "-5"
-  labels:
-    app.kubernetes.io/name: kong_prometheus_plugin
-    app.kubernetes.io/managed-by: struct8
-    app.kubernetes.io/instance: State8
-    cloudman.io/user: Ricardo
 plugin: prometheus
+
 
