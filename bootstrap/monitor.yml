@@ -180,6 +180,6 @@ spec:
       instance: "primary"
   grafanaCom:
     id: 7424
-    revision: 1
+    revision: 11
 
 
