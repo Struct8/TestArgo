@@ -142,3 +142,29 @@ spec:
           kind: Service  # Adicione explicitamente
           group: ""      # Adicione explicitamente
           weight: 1      # Adicione explicitamente
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: dashboard-argocd
+  namespace: monitoringtest
+spec:
+  instanceSelector:
+    matchLabels:
+      instance: "primary"
+  grafanaComDashboard:
+    id: 14584
+    revision: 1
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: dashboard-kong
+  namespace: monitoringtest
+spec:
+  instanceSelector:
+    matchLabels:
+      instance: "primary"
+  grafanaComDashboard:
+    id: 14450
+    revision: 1
