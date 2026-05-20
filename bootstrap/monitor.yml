@@ -139,5 +139,8 @@ spec:
     - matches:
         - path: { type: PathPrefix, value: / }
       backendRefs:
-        - name: grafana-instance-service # O Grafana Operator cria o serviço com este padrão de nome
+        - name: grafana-instance-service
           port: 3000
+          kind: Service  # Adicione explicitamente
+          group: ""      # Adicione explicitamente
+          weight: 1      # Adicione explicitamente
