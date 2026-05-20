@@ -302,10 +302,11 @@ kind: KongClusterPlugin
 metadata:
   name: prometheus-plugin-kong
   annotations:
-    kubernetes.io/ingress.class: "kong"
     argocd.argoproj.io/sync-wave: "-5"
   labels:
     global: "true"
+    # ADICIONE ESTA LABEL para que o controlador do Kong-class o carregue:
+    konghq.com/ingress-class: "kong"
     app.kubernetes.io/name: kong_prometheus_plugin
     app.kubernetes.io/managed-by: struct8
     app.kubernetes.io/instance: State8
