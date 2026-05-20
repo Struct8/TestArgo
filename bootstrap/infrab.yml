@@ -1,1 +1,311 @@
+---
+# File: templates/service-game-2048-svc.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: game-2048-svc
+  namespace: infrab
+  labels:
+    app.kubernetes.io/name: game-2048-svc
+    app.kubernetes.io/managed-by: struct8
+    app.kubernetes.io/instance: State8
+    cloudman.io/user: Ricardo
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  selector:
+    app.kubernetes.io/name: game-2048
+  ports:
+    - name: http-80
+      port: 80
+      targetPort: 80
+      protocol: TCP
 
+---
+# File: templates/deployment-game-2048.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: game-2048
+  labels:
+    app.kubernetes.io/name: game-2048
+    app.kubernetes.io/managed-by: struct8
+    app.kubernetes.io/instance: State8
+    cloudman.io/user: Ricardo
+  namespace: infrab
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  replicas: 1
+  template:
+    spec:
+      restartPolicy: Always
+      dnsPolicy: ClusterFirst
+      terminationGracePeriodSeconds: 30
+      containers:
+        - image: "public.ecr.aws/l6m2t8p7/docker-2048:latest"
+          imagePullPolicy: Always
+          name: game-2048
+          stdin: false
+          stdinOnce: false
+          tty: false
+          ports:
+            - containerPort: 80
+              name: http-80
+              protocol: TCP
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 200m
+              memory: 128Mi
+    metadata:
+      labels:
+        app.kubernetes.io/name: game-2048
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: game-2048
+
+---
+# File: templates/gatewayclass-kong-class.yaml
+apiVersion: gateway.networking.k8s.io/v1
+kind: GatewayClass
+metadata:
+  name: kong-class
+  annotations:
+    konghq.com/gatewayclass-unmanaged: "true"
+    argocd.argoproj.io/sync-wave: "0"
+  labels:
+    app.kubernetes.io/name: kong-class
+    app.kubernetes.io/managed-by: struct8
+    app.kubernetes.io/instance: State8
+    cloudman.io/user: Ricardo
+spec:
+  controllerName: konghq.com/kic-gateway-controller
+
+---
+# File: templates/gateway-gapi.yaml
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: gapi
+  labels:
+    app.kubernetes.io/name: gapi
+    app.kubernetes.io/managed-by: struct8
+    app.kubernetes.io/instance: State8
+    cloudman.io/user: Ricardo
+  namespace: infrab
+  annotations:
+    argocd.argoproj.io/sync-wave: "5"
+spec:
+  gatewayClassName: kong-class
+  listeners:
+    - name: g-api3
+      port: 80
+      protocol: HTTP
+      allowedRoutes:
+        namespaces:
+          from: All
+        kinds:
+          - group: gateway.networking.k8s.io
+            kind: HTTPRoute
+
+---
+# File: templates/httproute-route2-argo1.yaml
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: route2-argo1
+  namespace: infrab
+  labels:
+    app.kubernetes.io/name: route2-argo1
+    app.kubernetes.io/managed-by: struct8
+    app.kubernetes.io/instance: State8
+    cloudman.io/user: Ricardo
+  annotations:
+    argocd.argoproj.io/sync-wave: "5"
+spec:
+  parentRefs:
+    - name: gapi
+      namespace: infrab
+      sectionName: g-api3
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: argo1-argocd-server
+          namespace: argocd1
+          port: 80
+  hostnames:
+    - argo.k8s.cloudman.pro
+
+---
+# File: templates/httproute-route3-game-2048.yaml
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: route3-game-2048
+  namespace: infrab
+  labels:
+    app.kubernetes.io/name: route3-game-2048
+    app.kubernetes.io/managed-by: struct8
+    app.kubernetes.io/instance: State8
+    cloudman.io/user: Ricardo
+  annotations:
+    argocd.argoproj.io/sync-wave: "5"
+spec:
+  parentRefs:
+    - name: gapi
+      namespace: infrab
+      sectionName: g-api3
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: game-2048-svc
+          namespace: infrab
+          port: 80
+  hostnames:
+    - game2048.k8s.cloudman.pro
+
+---
+# File: templates/httproute-route3-kong.yaml
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: route3-kong
+  namespace: infrab
+  labels:
+    app.kubernetes.io/name: route3-kong
+    app.kubernetes.io/managed-by: struct8
+    app.kubernetes.io/instance: State8
+    cloudman.io/user: Ricardo
+  annotations:
+    argocd.argoproj.io/sync-wave: "5"
+spec:
+  parentRefs:
+    - name: gapi
+      namespace: infrab
+      sectionName: g-api3
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: kong-manager
+          namespace: infrab
+          port: 8002
+  hostnames:
+    - kong.k8s.cloudman.pro
+
+---
+# File: application-kong.yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kong
+  namespace: argocd1
+  labels:
+    app.kubernetes.io/name: kong
+    app.kubernetes.io/managed-by: struct8
+    app.kubernetes.io/instance: State8
+    cloudman.io/user: Ricardo
+  annotations:
+    argocd.argoproj.io/sync-wave: "-10"
+spec:
+  project: default
+  source:
+    targetRevision: 2.44.0
+    helm:
+      valuesObject:
+        manager:
+          enabled: true
+          type: ClusterIP
+        ingressController:
+          enabled: true
+          installCRDs: false
+          gatewayAPIControllerName: konghq.com/kic-gateway-controller
+          rbac:
+            gatewayAPI:
+              enabled: true
+          gatewayFeatureGates: "Gateway=true"
+        proxy:
+          type: ClusterIP
+          annotations:
+            konghq.com/gateway-name: "gapi"
+            konghq.com/gateway-namespace: "infrab"
+        env:
+          database: "off"
+          router_flavor: expressions
+        podAnnotations:
+          prometheus.io/scrape: "true"
+          prometheus.io/port: "8100"
+          prometheus.io/path: "/metrics"
+        serviceMonitor:
+          interval: 30s
+          scrapeTimeout: 10s
+          enabled: true
+        status:
+          enabled: true
+          http:
+            enabled: true
+        fullnameOverride: kong
+    repoURL: "https://charts.konghq.com"
+    chart: kong
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: infrab
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+
+---
+# File: templates/referencegrant-grant-infrab-to-argocd1.yaml
+apiVersion: gateway.networking.k8s.io/v1
+kind: ReferenceGrant
+metadata:
+  name: grant-infrab-to-argocd1
+  namespace: argocd1
+  labels:
+    app.kubernetes.io/name: grant-infrab-to-argocd1
+    app.kubernetes.io/managed-by: struct8
+    app.kubernetes.io/instance: State8
+    cloudman.io/user: Ricardo
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  from:
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      namespace: infrab
+  to:
+    - group: ""
+      kind: Service
+
+---
+# File: templates/kongclusterplugin-prometheus-plugin-kong.yaml
+apiVersion: configuration.konghq.com/v1
+kind: KongClusterPlugin
+metadata:
+  name: prometheus-plugin-kong
+  annotations:
+    kubernetes.io/ingress.class: "kong"
+    argocd.argoproj.io/sync-wave: "-5"
+  labels:
+    global: "true"
+    app.kubernetes.io/name: kong_prometheus_plugin
+    app.kubernetes.io/managed-by: struct8
+    app.kubernetes.io/instance: State8
+    cloudman.io/user: Ricardo
+plugin: prometheus
