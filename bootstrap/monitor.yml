@@ -167,6 +167,6 @@ spec:
       instance: "primary"
   # CORRIGIDO: alterado de grafanaComDashboard para grafanaCom
   grafanaCom:
-    id: 14450
+    id: 15662
     revision: 1
 
