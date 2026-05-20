@@ -152,7 +152,8 @@ spec:
   instanceSelector:
     matchLabels:
       instance: "primary"
-  grafanaComDashboard:
+  # CORRIGIDO: alterado de grafanaComDashboard para grafanaCom
+  grafanaCom:
     id: 14584
     revision: 1
 ---
@@ -165,6 +166,8 @@ spec:
   instanceSelector:
     matchLabels:
       instance: "primary"
-  grafanaComDashboard:
+  # CORRIGIDO: alterado de grafanaComDashboard para grafanaCom
+  grafanaCom:
     id: 14450
     revision: 1
+
