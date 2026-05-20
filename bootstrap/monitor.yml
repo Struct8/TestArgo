@@ -168,17 +168,5 @@ spec:
   grafanaCom:
     id: 15662
     revision: 1
----
-apiVersion: grafana.integreatly.org/v1beta1
-kind: GrafanaDashboard
-metadata:
-  name: dashboard-kong-ingress # Nome alterado para evitar conflito
-  namespace: monitoringtest
-spec:
-  instanceSelector:
-    matchLabels:
-      instance: "primary"
-  grafanaCom:
-    id: 7424
-    revision: 1
+
 
