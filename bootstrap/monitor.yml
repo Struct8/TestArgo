@@ -169,6 +169,17 @@ spec:
     id: 15662
     revision: 1
 ---
-
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: dashboard-kong-proxy
+  namespace: monitoringtest
+spec:
+  instanceSelector:
+    matchLabels:
+      instance: "primary"
+  # ⬇️ Carrega o JSON local (com "id": null já corrigido no arquivo)
+  json: |
+    {{ .Files.Get "templates/files/kong-dashboard.json" | indent 4 }}
 
 
