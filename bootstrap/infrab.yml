@@ -253,6 +253,8 @@ spec:
           interval: 30s
           scrapeTimeout: 10s
           enabled: true
+          labels:
+            monitor: "true"
         status:
           enabled: true
           http:
