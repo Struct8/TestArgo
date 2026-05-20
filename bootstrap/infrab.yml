@@ -298,14 +298,19 @@ spec:
 apiVersion: configuration.konghq.com/v1
 kind: KongClusterPlugin
 metadata:
-  name: prometheus-plugin-kong
+  name: prometheus-global
   annotations:
-    kubernetes.io/ingress.class: "kong"
-    argocd.argoproj.io/sync-wave: "-5"
+    # Garante que o controller do Kong gerencie este plugin
+    kubernetes.io/ingress.class: kong
   labels:
+    # Esta label indica ao Kong para aplicar o plugin globalmente a todas as rotas/serviços
     global: "true"
-    app.kubernetes.io/name: kong_prometheus_plugin
-    app.kubernetes.io/managed-by: struct8
-    app.kubernetes.io/instance: State8
-    cloudman.io/user: Ricardo
+plugin: prometheus
+config:
+  per_consumer: false
+  status_code_metrics: true
+  latency_metrics: true
+  bandwidth_metrics: true
+  upstream_health_metrics: true
+
 plugin: prometheus
