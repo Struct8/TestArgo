@@ -42,10 +42,9 @@ spec:
   resources:
     requests:
       memory: 1Gi
-  serviceMonitorNamespaceSelector: {}
-  serviceMonitorSelector:
-    matchLabels:
-      monitor: "true" # O gerador deve colocar essa label nos ServiceMonitors
+  serviceMonitorNamespaceSelector: {} # Busca em todos os namespaces
+  # ALTERE ESTA LINHA ABAIXO PARA COLETAR TUDO:
+  serviceMonitorSelector: {}          # Remove o filtro por label (coleta tudo)
 
 ---
 # SERVICE PARA O PROMETHEUS
