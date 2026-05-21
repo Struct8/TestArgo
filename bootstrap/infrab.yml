@@ -1,4 +1,3 @@
-
 ---
 # File: templates/serviceaccount-deployment-game-2048-sa.yaml
 apiVersion: v1
@@ -300,26 +299,6 @@ spec:
   to:
     - group: ""
       kind: Service
-
----
-# File: templates/kongclusterplugin-basic_auth-stack2.yaml
-apiVersion: configuration.konghq.com/v1
-kind: KongClusterPlugin
-metadata:
-  name: basic_auth-stack2
-  annotations:
-    kubernetes.io/ingress.class: "kong"
-    argocd.argoproj.io/sync-wave: "-5"
-  labels:
-    global: "true"
-    app.kubernetes.io/name: basic_auth-stack2
-    app.kubernetes.io/managed-by: struct8
-    app.kubernetes.io/instance: State8
-    cloudman.io/user: Ricardo
-plugin: basic_auth
-config:
-  anonymous: abc
-  hide_credentials: true
 
 ---
 # File: templates/kongclusterplugin-prometheus-stack2.yaml
