@@ -188,11 +188,17 @@ spec:
     auth.anonymous:
       enabled: "true"
       org_role: Admin
-  resources:
-    requests:
-      memory: 100Mi
-      cpu: 100m
-    limits:
-      memory: 256Mi
-      cpu: 200m
-  serviceAccountName: grafana-graf-sa
+  deployment:
+    spec:
+      template:
+        spec:
+          serviceAccountName: grafana-graf-sa
+          containers:
+            - name: grafana
+              resources:
+                requests:
+                  memory: 100Mi
+                  cpu: 100m
+                limits:
+                  memory: 256Mi
+                  cpu: 200m
