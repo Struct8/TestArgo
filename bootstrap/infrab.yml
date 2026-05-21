@@ -322,7 +322,6 @@ plugin: prometheus
 config:
   per_consumer: false
   status_code_metrics: true
-  ai_metrics: false
   latency_metrics: true
   bandwidth_metrics: true
   upstream_health_metrics: true
