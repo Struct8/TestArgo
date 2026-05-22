@@ -286,7 +286,24 @@ spec:
           port: 80
   hostnames:
     - kong.k8s.cloudman.pro
-
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: kong-metrics
+  namespace: infrab
+  # IMPORTANTE: Se o seu Prometheus não descobrir o PodMonitor automaticamente, 
+  # pode ser necessário adicionar uma label aqui, como:
+  # labels:
+  #   release: kube-prometheus-stack
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: kong # Busca os pods do Kong
+  podMetricsEndpoints:
+  - port: metrics # Conecta na porta 8100 que criamos acima
+    path: /metrics
+    interval: 15s
 ---
 apiVersion: gateway-operator.konghq.com/v1beta1
 kind: GatewayConfiguration
@@ -299,21 +316,33 @@ spec:
   dataPlaneOptions:
     deployment:
       replicas: 1
-      # CORREÇÃO: O nome correto do campo é podTemplateSpec
       podTemplateSpec:
         metadata:
           labels:
-            app.kubernetes.io/name: kong 
+            app.kubernetes.io/name: kong
         spec:
           containers:
             - name: proxy
               env:
                 - name: KONG_ADMIN_GUI_LISTEN
-                  value: "0.0.0.0:8002"                  
+                  value: "0.0.0.0:8002"
                 - name: KONG_ADMIN_GUI_URL
-                  value: "http://kong.k8s.cloudman.pro"  
+                  value: "http://kong.k8s.cloudman.pro"
+                - name: KONG_ADMIN_GUI_API_URL
+                  value: "http://kong-admin.k8s.cloudman.pro"
                 - name: KONG_ADMIN_LISTEN
                   value: "0.0.0.0:8001, 0.0.0.0:8444 ssl"
+                - name: KONG_STATUS_LISTEN
+                  value: "0.0.0.0:8100"
+              ports:
+                - containerPort: 8100
+                  name: metrics
+                  protocol: TCP
+    network:
+      services:
+        ingress:
+          type: ClusterIP
+          name: "kong-proxy-static"
 
 ---
 # File: templates/referencegrant-grant-infrab-to-argocd1.yaml
