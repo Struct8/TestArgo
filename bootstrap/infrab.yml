@@ -292,10 +292,8 @@ kind: PodMonitor
 metadata:
   name: kong-metrics
   namespace: infrab
-  # IMPORTANTE: Se o seu Prometheus não descobrir o PodMonitor automaticamente, 
-  # pode ser necessário adicionar uma label aqui, como:
-  # labels:
-  #   release: kube-prometheus-stack
+  labels:
+    release: kube-prometheus-stack
 spec:
   selector:
     matchLabels:
