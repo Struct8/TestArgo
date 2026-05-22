@@ -291,15 +291,20 @@ apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
 metadata:
   name: kong-metrics
-  namespace: infrab
+  # ALTERADO: Enviamos o monitor para o namespace onde o Prometheus está instalado
+  namespace: kube-prometheus-stack-system 
   labels:
     release: kube-prometheus-stack
 spec:
+  # ALTERADO: Instruímos o Prometheus a buscar os Pods lá no namespace "infrab"
+  namespaceSelector:
+    matchNames:
+      - infrab 
   selector:
     matchLabels:
-      app.kubernetes.io/name: kong # Busca os pods do Kong
+      app.kubernetes.io/name: kong
   podMetricsEndpoints:
-  - port: metrics # Conecta na porta 8100 que criamos acima
+  - port: metrics
     path: /metrics
     interval: 15s
 ---
