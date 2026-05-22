@@ -286,27 +286,47 @@ spec:
           port: 80
   hostnames:
     - kong.k8s.cloudman.pro
+
+---
+# File: templates/service-kong-metrics-svc.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: kong-metrics-svc
+  namespace: infrab
+  labels:
+    app.kubernetes.io/name: kong-metrics-svc
+    app.kubernetes.io/managed-by: struct8
+    app.kubernetes.io/instance: State8
+    cloudman.io/user: Ricardo
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  type: ClusterIP
+  ports:
+    - name: metrics
+      port: 8100
+      targetPort: 8100
+      protocol: TCP
+  selector:
+    app.kubernetes.io/name: kong
 ---
 apiVersion: monitoring.coreos.com/v1
-kind: PodMonitor
+kind: ServiceMonitor
 metadata:
-  name: kong-metrics
-  # ALTERADO: Enviamos o monitor para o namespace onde o Prometheus está instalado
-  namespace: kube-prometheus-stack-system 
+  name: kong-metrics-sm
+  namespace: infrab
   labels:
-    release: kube-prometheus-stack
+    release: kube-prometheus-stack # Vincula ao seu Prometheus instalado
 spec:
-  # ALTERADO: Instruímos o Prometheus a buscar os Pods lá no namespace "infrab"
-  namespaceSelector:
-    matchNames:
-      - infrab 
   selector:
     matchLabels:
-      app.kubernetes.io/name: kong
-  podMetricsEndpoints:
+      app.kubernetes.io/name: kong-metrics-svc # Direciona para o Service do Passo 1
+  endpoints:
   - port: metrics
     path: /metrics
     interval: 15s
+
 ---
 apiVersion: gateway-operator.konghq.com/v1beta1
 kind: GatewayConfiguration
