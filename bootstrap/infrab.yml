@@ -297,12 +297,30 @@ metadata:
 spec:
   dataPlaneOptions:
     deployment:
-      replicas: 1 # Quantos pods proxy do Kong você quer
+      replicas: 1
+      # --- ADICIONE ESTE BLOCO ABAIXO ---
+      podTemplate:
+        metadata:
+          labels:
+            app.kubernetes.io/name: kong # <--- Faz o seu Service (kong-8002-svc) encontrar este Pod
+        spec:
+          containers:
+            - name: proxy
+              env:
+                # Habilita a interface gráfica do Kong Manager (OSS) na porta 8002
+                - name: KONG_ADMIN_GUI_LISTEN
+                  value: "0.0.0.0:8002"
+                - name: KONG_ADMIN_GUI_URL
+                  value: "http://kong.k8s.cloudman.pro"
+                # Abre a porta administrativa padrão (necessária para o Manager)
+                - name: KONG_ADMIN_LISTEN
+                  value: "0.0.0.0:8001, 0.0.0.0:8444 ssl"
     network:
       services:
         ingress:
-          type: ClusterIP # Bloqueia a AWS de tentar provisionar um NLB/CLB
-          name: "kong-proxy-static" # O NOME QUE O SEU TERRAFORM ESTÁ PROCURANDO
+          type: ClusterIP
+          name: "kong-proxy-static"
+
 
 ---
 # File: templates/referencegrant-grant-infrab-to-argocd1.yaml
