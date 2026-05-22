@@ -299,28 +299,21 @@ spec:
   dataPlaneOptions:
     deployment:
       replicas: 1
-      # --- ADICIONE ESTE BLOCO ABAIXO ---
-      podTemplate:
+      # CORREÇÃO: O nome correto do campo é podTemplateSpec
+      podTemplateSpec:
         metadata:
           labels:
-            app.kubernetes.io/name: kong # <--- Faz o seu Service (kong-8002-svc) encontrar este Pod
+            app.kubernetes.io/name: kong 
         spec:
           containers:
             - name: proxy
               env:
                 - name: KONG_ADMIN_GUI_LISTEN
-                  value: "0.0.0.0:8002"                  # <--- COM ASPAS
+                  value: "0.0.0.0:8002"                  
                 - name: KONG_ADMIN_GUI_URL
-                  value: "http://kong.k8s.cloudman.pro"  # <--- COM ASPAS
+                  value: "http://kong.k8s.cloudman.pro"  
                 - name: KONG_ADMIN_LISTEN
-                  value: "0.0.0.0:8001, 0.0.0.0:8444 ssl" # <--- COM ASPAS
-
-    network:
-      services:
-        ingress:
-          type: ClusterIP
-          name: "kong-proxy-static"
-
+                  value: "0.0.0.0:8001, 0.0.0.0:8444 ssl"
 
 ---
 # File: templates/referencegrant-grant-infrab-to-argocd1.yaml
