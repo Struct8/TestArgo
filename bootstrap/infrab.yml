@@ -184,9 +184,9 @@ spec:
 apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
 metadata:
-  name: GAPI
+  name: gapi
   labels:
-    app.kubernetes.io/name: GAPI
+    app.kubernetes.io/name: gapi
     app.kubernetes.io/managed-by: struct8
     app.kubernetes.io/instance: State8
     cloudman.io/user: Ricardo
@@ -222,7 +222,7 @@ metadata:
     argocd.argoproj.io/sync-wave: "5"
 spec:
   parentRefs:
-    - name: GAPI
+    - name: gapi
       namespace: infrab
       sectionName: g-api3
   rules:
@@ -253,7 +253,7 @@ metadata:
     argocd.argoproj.io/sync-wave: "5"
 spec:
   parentRefs:
-    - name: GAPI
+    - name: gapi
       namespace: infrab
       sectionName: g-api3
   rules:
@@ -292,7 +292,7 @@ metadata:
     argocd.argoproj.io/sync-wave: "5"
 spec:
   parentRefs:
-    - name: GAPI
+    - name: gapi
       namespace: infrab
       sectionName: g-api3
   rules:
