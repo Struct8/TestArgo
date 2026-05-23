@@ -357,8 +357,8 @@ spec:
     network:
       services:
         ingress:
-          - type: ClusterIP
-            name: kong-proxy-static
+          type: ClusterIP
+          name: kong-proxy-static
 
 ---
 # File: templates/referencegrant-grant-infrab-to-argocd1.yaml
