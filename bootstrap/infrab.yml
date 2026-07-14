@@ -64,7 +64,7 @@ spec:
   parametersRef:
     group: gateway-operator.konghq.com
     kind: GatewayConfiguration
-    name: kong
+    name: prod-config
     namespace: infrab
 
 ---
@@ -123,7 +123,7 @@ spec:
           namespace: argocd1
           port: 80
   hostnames:
-    - argo.k8s.cloudman.pro
+    - argo.k8s.admin.billingpay.com.br
 
 ---
 # File: templates/httproute-route3-kong.yaml
@@ -154,7 +154,7 @@ spec:
           namespace: infrab
           port: 80
   hostnames:
-    - kong.k8s.cloudman.pro
+    - kong.k8s.admin.billingpay.com.br
 
 ---
 # File: templates/gatewayconfiguration-prod-config.yaml
@@ -192,9 +192,9 @@ spec:
                 - name: KONG_ADMIN_GUI_LISTEN
                   value: "0.0.0.0:8002"
                 - name: KONG_ADMIN_GUI_URL
-                  value: "http://kong.k8s.cloudman.pro"
+                  value: "http://kong.k8s.admin.billingpay.com.br"
                 - name: KONG_ADMIN_GUI_API_URL
-                  value: "http://kong-admin.k8s.cloudman.pro"
+                  value: "http://kong-admin.k8s.admin.billingpay.com.br"
                 - name: KONG_ADMIN_LISTEN
                   value: "0.0.0.0:8001, 0.0.0.0:8444 ssl"
                 - name: KONG_STATUS_LISTEN
@@ -203,6 +203,11 @@ spec:
         metadata:
           labels:
             app.kubernetes.io/name: kong
+    network:
+      services:
+        ingress:
+          type: ClusterIP
+          name: kong-proxy-static
 
 ---
 # File: templates/referencegrant-grant-infrab-to-argocd1.yaml
@@ -277,3 +282,4 @@ config:
   hide_client_headers: false
   error_code: 0
   sync_rate: 120
+
