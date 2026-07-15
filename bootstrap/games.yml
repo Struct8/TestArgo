@@ -100,7 +100,7 @@ spec:
       terminationGracePeriodSeconds: 30
       serviceAccountName: deployment-game-2048-v1-sa
       containers:
-        - image: alexwhen/docker-2048
+        - image: "public.ecr.aws/l6m2t8p7/docker-2048:latest"
           imagePullPolicy: IfNotPresent
           name: game-2048
           ports:
