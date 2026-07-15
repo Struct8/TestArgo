@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: syncope-core-8080-svc
+  namespace: syncope
+  labels:
+    app.kubernetes.io/name: syncope-core-8080-svc
+    app.kubernetes.io/managed-by: struct8
+    app.kubernetes.io/instance: State12
+    cloudman.io/user: rmay-struct
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  type: ClusterIP
+  ports:
+    - name: http-8080
+      port: 80
+      targetPort: 8080
+      protocol: TCP
+  selector:
+    app.kubernetes.io/name: syncope-core
