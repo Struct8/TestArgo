@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+  labels:
+    app.kubernetes.io/name: postgres
+    app.kubernetes.io/managed-by: struct8
+    app.kubernetes.io/instance: State12
+    cloudman.io/user: rmay-struct
+  namespace: syncope
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: postgres
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: postgres
