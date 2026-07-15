@@ -29,14 +29,14 @@ metadata:
     argocd.argoproj.io/sync-wave: "-10"
 
 ---
-# File: templates/service-game-2048-80-svc.yaml
+# File: templates/service-game-2048-svc.yaml
 apiVersion: v1
 kind: Service
 metadata:
-  name: game-2048-80-svc
+  name: game-2048-svc
   namespace: gamestest
   labels:
-    app.kubernetes.io/name: game-2048-80-svc
+    app.kubernetes.io/name: game-2048-svc
     app.kubernetes.io/managed-by: struct8
     app.kubernetes.io/instance: State11
     cloudman.io/user: rmay-struct
@@ -53,14 +53,14 @@ spec:
     app.kubernetes.io/name: game-2048
 
 ---
-# File: templates/service-supermario-8080-svc.yaml
+# File: templates/service-supermario-svc.yaml
 apiVersion: v1
 kind: Service
 metadata:
-  name: supermario-8080-svc
+  name: supermario-svc
   namespace: gamestest
   labels:
-    app.kubernetes.io/name: supermario-8080-svc
+    app.kubernetes.io/name: supermario-svc
     app.kubernetes.io/managed-by: struct8
     app.kubernetes.io/instance: State11
     cloudman.io/user: rmay-struct
@@ -69,8 +69,12 @@ metadata:
 spec:
   type: ClusterIP
   ports:
-    - name: http-8080
+    - name: http-80
       port: 80
+      targetPort: 8080
+      protocol: TCP
+    - name: port-8080
+      port: 8080
       targetPort: 8080
       protocol: TCP
   selector:
@@ -147,6 +151,9 @@ spec:
         - image: pengbai/docker-supermario
           imagePullPolicy: IfNotPresent
           name: supermario
+          stdin: false
+          stdinOnce: false
+          tty: false
           ports:
             - containerPort: 8080
               protocol: TCP
@@ -189,7 +196,7 @@ spec:
             type: PathPrefix
             value: /
       backendRefs:
-        - name: game-2048-80-svc
+        - name: game-2048-svc
           namespace: gamestest
           port: 80
   hostnames:
@@ -220,8 +227,66 @@ spec:
             type: PathPrefix
             value: /
       backendRefs:
-        - name: supermario-8080-svc
+        - name: supermario-svc
           namespace: gamestest
           port: 80
   hostnames:
     - mario.k8s.admin.billingpay.com.br
+
+---
+# File: templates/networkpolicy-allow-gateway-to-game-2048-80.yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-gateway-to-game-2048-80
+  namespace: gamestest
+  labels:
+    app.kubernetes.io/name: allow-gateway-to-game-2048-80
+    app.kubernetes.io/managed-by: struct8
+    app.kubernetes.io/instance: State11
+    cloudman.io/user: rmay-struct
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: game-2048
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: infrab
+      ports:
+        - protocol: TCP
+          port: 80
+
+---
+# File: templates/networkpolicy-allow-gateway-to-supermario-8080.yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-gateway-to-supermario-8080
+  namespace: gamestest
+  labels:
+    app.kubernetes.io/name: allow-gateway-to-supermario-8080
+    app.kubernetes.io/managed-by: struct8
+    app.kubernetes.io/instance: State11
+    cloudman.io/user: rmay-struct
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: supermario
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: infrab
+      ports:
+        - protocol: TCP
+          port: 8080
