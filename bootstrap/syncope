@@ -73,9 +73,8 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "-5"
 data:
-  ANONYMOUS_USER: anonymous
-  ANONYMOUS_KEY: anonymousKey2026Syncope
-wait_for_service_account_token: false
+  ANONYMOUS_USER: YW5vbnltb3Vz
+  ANONYMOUS_KEY: YW5vbnltb3VzS2V5MjAyNlN5bmNvcGU=
 
 ---
 # File: templates/secret-syncope-db-secret.yaml
@@ -92,11 +91,10 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "-5"
 data:
-  POSTGRES_PASSWORD: SyncopeDbP4ss2026
-  DB_URL: "jdbc:postgresql://postgres-svc:5432/syncope?stringtype=unspecified"
-  DB_USER: syncope
-  DB_PASSWORD: SyncopeDbP4ss2026
-wait_for_service_account_token: false
+  POSTGRES_PASSWORD: U3luY29wZURiUDRzczIwMjY=
+  DB_URL: amRiYzpwb3N0Z3Jlc3FsOi8vcG9zdGdyZXMtc3ZjOjU0MzIvc3luY29wZT9zdHJpbmd0eXBlPXVuc3BlY2lmaWVk
+  DB_USER: c3luY29wZQ==
+  DB_PASSWORD: U3luY29wZURiUDRzczIwMjY=
 
 ---
 # File: templates/service-postgres-svc.yaml
@@ -383,9 +381,9 @@ spec:
               memory: 1024Mi
           envFrom:
             - secretRef:
-                name: syncope-anonymous-secret
-            - secretRef:
                 name: syncope-db-secret
+            - secretRef:
+                name: syncope-anonymous-secret
     metadata:
       labels:
         app.kubernetes.io/name: syncope-core
@@ -548,6 +546,93 @@ spec:
     - syncope-self.k8s.admin.billingpay.com.br
 
 ---
+# File: templates/networkpolicy-allow-gateway-to-syncope-console-8080.yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-gateway-to-syncope-console-8080
+  namespace: syncope
+  labels:
+    app.kubernetes.io/name: allow-gateway-to-syncope-console-8080
+    app.kubernetes.io/managed-by: struct8
+    app.kubernetes.io/instance: State12
+    cloudman.io/user: rmay-struct
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: syncope-console
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: infrab
+      ports:
+        - protocol: TCP
+          port: 8080
+
+---
+# File: templates/networkpolicy-allow-gateway-to-syncope-core-8080.yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-gateway-to-syncope-core-8080
+  namespace: syncope
+  labels:
+    app.kubernetes.io/name: allow-gateway-to-syncope-core-8080
+    app.kubernetes.io/managed-by: struct8
+    app.kubernetes.io/instance: State12
+    cloudman.io/user: rmay-struct
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: syncope-core
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: infrab
+      ports:
+        - protocol: TCP
+          port: 8080
+
+---
+# File: templates/networkpolicy-allow-gateway-to-syncope-enduser-8080.yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-gateway-to-syncope-enduser-8080
+  namespace: syncope
+  labels:
+    app.kubernetes.io/name: allow-gateway-to-syncope-enduser-8080
+    app.kubernetes.io/managed-by: struct8
+    app.kubernetes.io/instance: State12
+    cloudman.io/user: rmay-struct
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: syncope-enduser
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: infrab
+      ports:
+        - protocol: TCP
+          port: 8080
+
+---
 # File: templates/networkpolicy-allow-syncope-console-to-syncope-core-8080.yaml
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -633,22 +718,3 @@ spec:
       ports:
         - protocol: TCP
           port: 8080
-
----
-# File: templates/networkpolicy-default-deny-ingress-syncope.yaml
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: default-deny-ingress-syncope
-  namespace: syncope
-  labels:
-    app.kubernetes.io/name: default-deny-ingress-syncope
-    app.kubernetes.io/managed-by: struct8
-    app.kubernetes.io/instance: State12
-    cloudman.io/user: rmay-struct
-  annotations:
-    argocd.argoproj.io/sync-wave: "0"
-spec:
-  podSelector: {}
-  policyTypes:
-    - Ingress
