@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cfgtest1
+  namespace: helmtest1
+  labels:
+    app.kubernetes.io/name: cfgtest1
+    app.kubernetes.io/managed-by: struct8
+    app.kubernetes.io/instance: envtest1
+    cloudman.io/user: rmay-struct
+  annotations:
+    argocd.argoproj.io/sync-wave: "-5"
+data:
+  hello: world
