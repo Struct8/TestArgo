@@ -1,0 +1,20 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: ReferenceGrant
+metadata:
+  name: grant-infrab-to-argocd1
+  namespace: argocd1
+  labels:
+    app.kubernetes.io/name: grant-infrab-to-argocd1
+    app.kubernetes.io/managed-by: struct8
+    app.kubernetes.io/instance: Chart
+    cloudman.io/user: rmay-struct
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  from:
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      namespace: infrab
+  to:
+    - group: ""
+      kind: Service

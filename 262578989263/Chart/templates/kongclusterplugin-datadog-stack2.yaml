@@ -1,0 +1,19 @@
+apiVersion: configuration.konghq.com/v1
+kind: KongClusterPlugin
+metadata:
+  name: datadog-stack2
+  annotations:
+    kubernetes.io/ingress.class: "kong"
+    argocd.argoproj.io/sync-wave: "-5"
+  labels:
+    global: "true"
+    app.kubernetes.io/name: datadog-stack2
+    app.kubernetes.io/managed-by: struct8
+    app.kubernetes.io/instance: Chart
+    cloudman.io/user: rmay-struct
+plugin: datadog
+config:
+  port: 0
+  retry_count: 0
+  queue_size: 0
+  flush_timeout: 0
