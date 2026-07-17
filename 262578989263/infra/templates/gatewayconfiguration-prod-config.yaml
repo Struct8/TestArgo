@@ -18,7 +18,7 @@ spec:
         spec:
           containers:
             - name: proxy
-              image: "kong/kong:3.14"
+              image: "kong/kong:3.9"
               resources:
                 requests:
                   cpu: "250m"
