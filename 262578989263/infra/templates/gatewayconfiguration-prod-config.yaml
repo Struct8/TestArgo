@@ -16,7 +16,6 @@ spec:
       replicas: 1
       podTemplateSpec:
         spec:
-          activeDeadlineSeconds: 0
           automountServiceAccountToken: false
           enableServiceLinks: false
           hostIPC: false
