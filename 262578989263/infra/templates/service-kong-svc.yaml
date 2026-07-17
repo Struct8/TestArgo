@@ -15,7 +15,11 @@ spec:
   ports:
     - name: http-80
       port: 80
-      targetPort: 80
+      targetPort: 8000
+      protocol: TCP
+    - name: port-8100
+      port: 8100
+      targetPort: 8100
       protocol: TCP
   selector:
     app.kubernetes.io/name: kong
