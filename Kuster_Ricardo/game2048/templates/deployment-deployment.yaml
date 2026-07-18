@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deployment
+  labels:
+    app.kubernetes.io/name: Deployment
+    app.kubernetes.io/managed-by: struct8
+    app.kubernetes.io/instance: game2048
+    cloudman.io/user: rmay-struct
+  namespace: ns
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+  template:
+    spec:
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      serviceAccountName: deployment-deployment-v1-sa
+      containers:
+        - imagePullPolicy: Always
+          name: Deployment_
+          stdin: false
+          stdinOnce: false
+          tty: false
+          ports:
+            - containerPort: 0
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "200m"
+              memory: "256Mi"
+    metadata:
+      labels:
+        app.kubernetes.io/name: Deployment
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: Deployment
