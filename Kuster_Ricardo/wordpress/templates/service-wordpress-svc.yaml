@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: wordpress-svc
+  namespace: wp
+  labels:
+    app.kubernetes.io/name: wordpress-svc
+    app.kubernetes.io/managed-by: struct8
+    app.kubernetes.io/instance: wordpress
+    cloudman.io/user: rmay-struct
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  selector:
+    app.kubernetes.io/name: wordpress
+  ports:
+    - name: port-80
+      port: 80
+      targetPort: 80
+      protocol: TCP

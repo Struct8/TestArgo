@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql
+  labels:
+    app.kubernetes.io/name: mysql
+    app.kubernetes.io/managed-by: struct8
+    app.kubernetes.io/instance: wordpress
+    cloudman.io/user: rmay-struct
+  namespace: wp
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  replicas: 1
+  template:
+    spec:
+      automountServiceAccountToken: false
+      hostIPC: false
+      hostNetwork: false
+      hostPID: false
+      restartPolicy: Always
+      shareProcessNamespace: false
+      terminationGracePeriodSeconds: 30
+      serviceAccountName: deployment-mysql-v1-sa
+      containers:
+        - image: "mysql:8"
+          imagePullPolicy: IfNotPresent
+          name: mysql
+          stdin: false
+          stdinOnce: false
+          tty: false
+          ports:
+            - containerPort: 3306
+              protocol: TCP
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "512Mi"
+            limits:
+              cpu: "500m"
+              memory: "1024Mi"
+          envFrom:
+            - secretRef:
+                name: mysql-secret
+          volumeMounts:
+            - name: mysql-data
+              mountPath: /var/lib/mysql
+      volumes:
+        - name: mysql-data
+          persistentVolumeClaim:
+            claimName: mysql-data
+    metadata:
+      labels:
+        app.kubernetes.io/name: mysql
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: mysql
