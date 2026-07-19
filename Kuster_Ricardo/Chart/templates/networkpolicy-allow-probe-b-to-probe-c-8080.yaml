@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-probe-b-to-probe-c-8080
+  namespace: probe-lab
+  labels:
+    app.kubernetes.io/name: allow-probe-b-to-probe-c-8080
+    app.kubernetes.io/managed-by: struct8
+    app.kubernetes.io/instance: Chart
+    cloudman.io/user: rmay-struct
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: probe-c
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: probe-b
+      ports:
+        - protocol: TCP
+          port: 8080
