@@ -19,6 +19,14 @@ spec:
     - matches:
         - path:
             type: PathPrefix
+            value: /syncope-enduser
+      backendRefs:
+        - name: syncope-enduser-svc
+          namespace: syncope
+          port: 80
+    - matches:
+        - path:
+            type: Exact
             value: /
       backendRefs:
         - name: syncope-enduser-svc
@@ -30,13 +38,5 @@ spec:
             path:
               type: ReplacePrefixMatch
               replacePrefixMatch: /syncope-enduser/
-    - matches:
-        - path:
-            type: PathPrefix
-            value: /syncope-enduser
-      backendRefs:
-        - name: syncope-enduser-svc
-          namespace: syncope
-          port: 80
   hostnames:
     - syncope-self.k8s.admin.billingpay.com.br
