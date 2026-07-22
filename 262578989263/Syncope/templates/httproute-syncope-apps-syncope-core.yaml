@@ -33,10 +33,11 @@ spec:
           namespace: syncope
           port: 80
       filters:
-        - type: URLRewrite
-          urlRewrite:
+        - type: RequestRedirect
+          requestRedirect:
+            statusCode: 302
             path:
-              type: ReplacePrefixMatch
-              replacePrefixMatch: /syncope/
+              type: ReplaceFullPath
+              replaceFullPath: /syncope/
   hostnames:
     - syncope.k8s.admin.billingpay.com.br
