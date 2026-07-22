@@ -35,5 +35,7 @@ spec:
             path:
               type: ReplaceFullPath
               replaceFullPath: /syncope/
+            hostname: syncope.k8s.admin.billingpay.com.br
+            scheme: https
   hostnames:
     - syncope.k8s.admin.billingpay.com.br

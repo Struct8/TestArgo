@@ -35,5 +35,7 @@ spec:
             path:
               type: ReplaceFullPath
               replaceFullPath: /syncope-enduser/
+            hostname: syncope-self.k8s.admin.billingpay.com.br
+            scheme: https
   hostnames:
     - syncope-self.k8s.admin.billingpay.com.br
