@@ -30,5 +30,13 @@ spec:
             path:
               type: ReplacePrefixMatch
               replacePrefixMatch: /syncope-console/
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /syncope-console
+      backendRefs:
+        - name: syncope-console-svc
+          namespace: syncope
+          port: 80
   hostnames:
     - syncope-admin.k8s.admin.billingpay.com.br
