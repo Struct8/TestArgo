@@ -18,7 +18,7 @@ spec:
     spec:
       restartPolicy: Always
       terminationGracePeriodSeconds: 30
-      serviceAccountName: deployment-syncope-core-v1-sa
+      serviceAccountName: syncope-core-sa
       containers:
         - image: "apache/syncope:4.1.1"
           imagePullPolicy: IfNotPresent
@@ -55,9 +55,9 @@ spec:
               memory: "1024Mi"
           envFrom:
             - secretRef:
-                name: syncope-db-secret
-            - secretRef:
                 name: syncope-anonymous-secret
+            - secretRef:
+                name: syncope-db-secret
     metadata:
       labels:
         app.kubernetes.io/name: syncope-core

@@ -24,5 +24,11 @@ spec:
         - name: syncope-core-svc
           namespace: syncope
           port: 80
+      filters:
+        - type: URLRewrite
+          urlRewrite:
+            path:
+              type: ReplacePrefixMatch
+              replacePrefixMatch: /syncope/
   hostnames:
     - syncope.k8s.admin.billingpay.com.br

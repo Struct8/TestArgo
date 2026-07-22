@@ -24,5 +24,11 @@ spec:
         - name: syncope-enduser-svc
           namespace: syncope
           port: 80
+      filters:
+        - type: URLRewrite
+          urlRewrite:
+            path:
+              type: ReplacePrefixMatch
+              replacePrefixMatch: /syncope-enduser/
   hostnames:
     - syncope-self.k8s.admin.billingpay.com.br
