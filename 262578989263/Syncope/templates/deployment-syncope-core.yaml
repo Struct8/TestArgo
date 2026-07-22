@@ -38,7 +38,7 @@ spec:
             - name: KEYMASTER_ADDRESS
               value: "http://localhost:8080/syncope/rest/keymaster"
             - name: SERVICE_DISCOVERY_ADDRESS
-              value: "http://localhost:8080/syncope/rest/"
+              value: "http://syncope-core-svc:8080/syncope/rest/"
             - name: POSTGRES_HOST
               value: "postgres-svc"
             - name: POSTGRES_PORT
