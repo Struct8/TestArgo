@@ -55,9 +55,9 @@ spec:
               memory: "1024Mi"
           envFrom:
             - secretRef:
-                name: syncope-anonymous-secret
-            - secretRef:
                 name: syncope-db-secret
+            - secretRef:
+                name: syncope-anonymous-secret
     metadata:
       labels:
         app.kubernetes.io/name: syncope-core
