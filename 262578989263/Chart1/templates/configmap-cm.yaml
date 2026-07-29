@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: CM
+  namespace: gaming
+  labels:
+    app.kubernetes.io/name: CM
+    app.kubernetes.io/managed-by: struct8
+    app.kubernetes.io/instance: Chart1
+    cloudman.io/user: rmay-struct
+  annotations:
+    argocd.argoproj.io/sync-wave: "-5"
