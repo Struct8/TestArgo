@@ -25,4 +25,4 @@ spec:
           namespace: infra1
           port: 80
   hostnames:
-    - argo.k8s.admin.billingpay.com.br
+    - argo.k8h.admin.billingpay.com.br
