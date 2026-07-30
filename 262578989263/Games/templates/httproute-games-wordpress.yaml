@@ -1,10 +1,10 @@
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
-  name: games-kumaefs
+  name: games-wordpress
   namespace: gamestest
   labels:
-    app.kubernetes.io/name: games-kumaefs
+    app.kubernetes.io/name: games-wordpress
     app.kubernetes.io/managed-by: struct8
     app.kubernetes.io/instance: Games
     cloudman.io/user: rmay-struct
@@ -21,8 +21,8 @@ spec:
             type: PathPrefix
             value: /
       backendRefs:
-        - name: kuma-efs-svc
+        - name: word-press-svc
           namespace: gamestest
           port: 80
   hostnames:
-    - kuma-efs.k8h.admin.billingpay.com.br
+    - wp.k8h.admin.billingpay.com.br

@@ -1,9 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: kumaefs
+  name: wordpress
   labels:
-    app.kubernetes.io/name: KumaEFS
+    app.kubernetes.io/name: WordPress
     app.kubernetes.io/managed-by: struct8
     app.kubernetes.io/instance: Games
     cloudman.io/user: rmay-struct
@@ -12,8 +12,6 @@ metadata:
     argocd.argoproj.io/sync-wave: "0"
 spec:
   replicas: 1
-  strategy:
-    type: Recreate
   template:
     spec:
       automountServiceAccountToken: false
@@ -23,40 +21,51 @@ spec:
       restartPolicy: Always
       shareProcessNamespace: false
       terminationGracePeriodSeconds: 30
-      serviceAccountName: deployment-kumaefs-v1-sa
+      serviceAccountName: deployment-wordpress-v1-sa
       containers:
-        - image: "louislam/uptime-kuma:1"
-          imagePullPolicy: Always
-          name: uptime-kuma
+        - image: "wordpress:6-apache"
+          imagePullPolicy: IfNotPresent
+          name: wordpress
           stdin: false
           stdinOnce: false
           tty: false
+          env:
+            - name: WORDPRESS_DB_HOST
+              value: "rdsdb1-k8hub.cwlyg684ob31.us-east-1.rds.amazonaws.com:3306"
+            - name: WORDPRESS_DB_USER
+              value: "wpadmin"
+            - name: WORDPRESS_DB_PASSWORD
+              value: "WordPressRds2026"
+            - name: WORDPRESS_DB_NAME
+              value: "wordpress"
           ports:
-            - containerPort: 3001
+            - containerPort: 80
               name: http
               protocol: TCP
           resources:
             requests:
-              cpu: "100m"
-              memory: "256Mi"
-            limits:
               cpu: "200m"
               memory: "512Mi"
+            limits:
+              cpu: "400m"
+              memory: "1024Mi"
           securityContext:
             allowPrivilegeEscalation: false
             privileged: false
             readOnlyRootFilesystem: false
             runAsNonRoot: false
           volumeMounts:
-            - name: pvc-efs
-              mountPath: /app/data
+            - name: pvc-wp
+              mountPath: /var/www/html
       volumes:
-        - name: pvc-efs
+        - name: pvc-wp
           persistentVolumeClaim:
-            claimName: pvc-efs
+            claimName: pvc-wp
     metadata:
       labels:
-        app.kubernetes.io/name: KumaEFS
+        app.kubernetes.io/name: WordPress
+  strategy:
+    type: RollingUpdate
   selector:
     matchLabels:
-      app.kubernetes.io/name: KumaEFS
+      app.kubernetes.io/name: WordPress

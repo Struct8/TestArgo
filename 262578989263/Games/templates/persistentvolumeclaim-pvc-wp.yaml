@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: pvc-efs
+  name: pvc-wp
   labels:
-    app.kubernetes.io/name: PVC-EFS
+    app.kubernetes.io/name: PVC-WP
     app.kubernetes.io/managed-by: struct8
     app.kubernetes.io/instance: Games
     cloudman.io/user: rmay-struct
