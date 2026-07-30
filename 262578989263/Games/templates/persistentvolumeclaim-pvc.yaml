@@ -16,4 +16,4 @@ spec:
   volumeName: pv-volume-k8hub
   resources:
     requests:
-      storage: "8Gi"
+      storage: "100Gi"
