@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kumaefs
+  labels:
+    app.kubernetes.io/name: KumaEFS
+    app.kubernetes.io/managed-by: struct8
+    app.kubernetes.io/instance: Games
+    cloudman.io/user: rmay-struct
+  namespace: gamestest
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    spec:
+      automountServiceAccountToken: false
+      hostIPC: false
+      hostNetwork: false
+      hostPID: false
+      restartPolicy: Always
+      shareProcessNamespace: false
+      terminationGracePeriodSeconds: 30
+      serviceAccountName: deployment-kumaefs-v1-sa
+      containers:
+        - image: "louislam/uptime-kuma:1"
+          imagePullPolicy: Always
+          name: uptime-kuma
+          stdin: false
+          stdinOnce: false
+          tty: false
+          ports:
+            - containerPort: 3001
+              name: http
+              protocol: TCP
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+            limits:
+              cpu: "200m"
+              memory: "512Mi"
+          securityContext:
+            allowPrivilegeEscalation: false
+            privileged: false
+            readOnlyRootFilesystem: false
+            runAsNonRoot: false
+          volumeMounts:
+            - name: pvc-efs
+              mountPath: /app/data
+      volumes:
+        - name: pvc-efs
+          persistentVolumeClaim:
+            claimName: pvc-efs
+    metadata:
+      labels:
+        app.kubernetes.io/name: KumaEFS
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: KumaEFS
