@@ -38,9 +38,14 @@ spec:
               env:
                 - name: KONG_STATUS_LISTEN
                   value: "0.0.0.0:8100"
+                - name: KONG_PROXY_LISTEN
+                  value: "0.0.0.0:8000 reuseport backlog=16384, 0.0.0.0:8080 reuseport backlog=16384, 0.0.0.0:8443 http2 ssl reuseport backlog=16384"
               ports:
                 - name: metrics
                   containerPort: 8100
+                  protocol: TCP
+                - name: proxy-redirect
+                  containerPort: 8080
                   protocol: TCP
               resources:
                 limits:
