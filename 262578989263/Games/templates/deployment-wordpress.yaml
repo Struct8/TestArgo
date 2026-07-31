@@ -38,6 +38,8 @@ spec:
               value: "WordPressRds2026"
             - name: WORDPRESS_DB_NAME
               value: "wordpress"
+            - name: WORDPRESS_CONFIG_EXTRA
+              value: "if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') { $_SERVER['HTTPS'] = 'on'; } define('WP_HOME','https://wp.k8h.admin.billingpay.com.br'); define('WP_SITEURL','https://wp.k8h.admin.billingpay.com.br');"
           ports:
             - containerPort: 80
               name: http
