@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: deployment-svc
+  name: deployment1-svc
   namespace: gamestest
   labels:
-    app.kubernetes.io/name: deployment-svc
+    app.kubernetes.io/name: deployment1-svc
     app.kubernetes.io/managed-by: struct8
     app.kubernetes.io/instance: Games
     cloudman.io/user: rmay-struct
@@ -15,7 +15,11 @@ spec:
   ports:
     - name: http-80
       port: 80
-      targetPort: 80
+      targetPort: 3001
+      protocol: TCP
+    - name: port-3001
+      port: 3001
+      targetPort: 3001
       protocol: TCP
   selector:
-    app.kubernetes.io/name: Deployment
+    app.kubernetes.io/name: Deployment1
