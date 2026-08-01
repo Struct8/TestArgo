@@ -20,11 +20,9 @@ spec:
         - path:
             type: PathPrefix
             value: /
-      filters:
-        - type: RequestRedirect
-          requestRedirect:
-            scheme: https
-            statusCode: 301
-            hostname: wp.k8h.admin.billingpay.com.br
+      backendRefs:
+        - name: word-press-svc
+          namespace: gamestest
+          port: 80
   hostnames:
     - wp.k8h.admin.billingpay.com.br
