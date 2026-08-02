@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wordpress
+  labels:
+    app.kubernetes.io/name: wordpress
+    app.kubernetes.io/managed-by: struct8
+    app.kubernetes.io/instance: Games
+    cloudman.io/user: rmay-struct
+  namespace: gamestest
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  replicas: 1
+  template:
+    spec:
+      automountServiceAccountToken: false
+      hostIPC: false
+      hostNetwork: false
+      hostPID: false
+      restartPolicy: Always
+      shareProcessNamespace: false
+      terminationGracePeriodSeconds: 30
+      serviceAccountName: deployment-wordpress-v1-sa
+      containers:
+        - image: "wordpress:6-apache"
+          imagePullPolicy: IfNotPresent
+          name: wordpress
+          stdin: false
+          stdinOnce: false
+          tty: false
+          env:
+            - name: WORDPRESS_DB_HOST
+              value: "rdsdb1-k8hub.cwlyg684ob31.us-east-1.rds.amazonaws.com:3306"
+            - name: WORDPRESS_DB_USER
+              value: "wpadmin"
+            - name: WORDPRESS_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: word-press-db-password
+                  key: password
+            - name: WORDPRESS_DB_NAME
+              value: "wordpress"
+            - name: WORDPRESS_CONFIG_EXTRA
+              value: "$_SERVER['HTTPS'] = 'on'; define('WP_HOME','https://wp.k8h.admin.billingpay.com.br'); define('WP_SITEURL','https://wp.k8h.admin.billingpay.com.br');"
+          ports:
+            - containerPort: 80
+              name: http
+              protocol: TCP
+          resources:
+            requests:
+              cpu: "200m"
+              memory: "512Mi"
+            limits:
+              cpu: "400m"
+              memory: "1024Mi"
+          securityContext:
+            allowPrivilegeEscalation: false
+            privileged: false
+            readOnlyRootFilesystem: false
+            runAsNonRoot: false
+          envFrom:
+            - secretRef:
+                name: secret1
+          volumeMounts:
+            - name: pvc-wp
+              mountPath: /var/www/html
+      volumes:
+        - name: pvc-wp
+          persistentVolumeClaim:
+            claimName: pvc-wp
+    metadata:
+      labels:
+        app.kubernetes.io/name: wordpress
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: wordpress
