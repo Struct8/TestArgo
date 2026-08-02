@@ -2,14 +2,15 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: pvc-wp
+  annotations:
+    argocd.argoproj.io/sync-options: "Prune=false"
+    argocd.argoproj.io/sync-wave: "0"
   labels:
     app.kubernetes.io/name: PVC-WP
     app.kubernetes.io/managed-by: struct8
     app.kubernetes.io/instance: Games
     cloudman.io/user: rmay-struct
   namespace: gamestest
-  annotations:
-    argocd.argoproj.io/sync-wave: "0"
 spec:
   accessModes:
     - ReadWriteMany
