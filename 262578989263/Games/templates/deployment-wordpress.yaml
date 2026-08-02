@@ -21,7 +21,7 @@ spec:
       restartPolicy: Always
       shareProcessNamespace: false
       terminationGracePeriodSeconds: 30
-      serviceAccountName: deployment-wordpress-v1-sa
+      serviceAccountName: pod-wordpress-v1-sa
       containers:
         - image: "wordpress:6-apache"
           imagePullPolicy: IfNotPresent

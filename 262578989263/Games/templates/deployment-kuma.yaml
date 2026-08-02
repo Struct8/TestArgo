@@ -18,7 +18,7 @@ spec:
     spec:
       restartPolicy: Always
       terminationGracePeriodSeconds: 30
-      serviceAccountName: deployment-kuma-v1-sa
+      serviceAccountName: pod-kuma-v1-sa
       containers:
         - image: "louislam/uptime-kuma:1"
           imagePullPolicy: IfNotPresent
