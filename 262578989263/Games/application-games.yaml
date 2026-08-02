@@ -1,0 +1,27 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: games
+  namespace: argocd1
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    app.kubernetes.io/name: games
+    app.kubernetes.io/managed-by: struct8
+    app.kubernetes.io/instance: Games
+    cloudman.io/user: rmay-struct
+  annotations:
+    argocd.argoproj.io/sync-wave: "-10"
+spec:
+  project: proj2
+  source:
+    repoURL: "https://github.com/Struct8/TestArgo.git"
+    targetRevision: HEAD
+    path: 262578989263/Games/templates
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: gamestest
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
