@@ -23,7 +23,7 @@ spec:
       serviceAccountName: deployment-struct8-agent-sa
       containers:
         - name: agent
-          image: "ghcr.io/struct8/k8s-agent:0.3.0"
+          image: "ghcr.io/struct8/k8s-agent:0.4.0"
           env:
             - name: CLUSTER_ID
               value: "clu_RWvynw18UCIIpLqjUxMjxQ"
