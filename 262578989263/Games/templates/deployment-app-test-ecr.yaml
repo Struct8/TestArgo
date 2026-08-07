@@ -20,7 +20,7 @@ spec:
       terminationGracePeriodSeconds: 30
       serviceAccountName: deployment-app-test-ecr-v1-sa
       containers:
-        - image: "262578989263.dkr.ecr.us-east-1.amazonaws.com/repo-k8hub:v1"
+        - image: "262578989263.dkr.ecr.us-east-1.amazonaws.com/repo-k8hub:v2"
           imagePullPolicy: IfNotPresent
           name: games-web
           stdin: false
