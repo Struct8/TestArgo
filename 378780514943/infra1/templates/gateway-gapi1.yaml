@@ -1,0 +1,24 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: gapi1
+  labels:
+    app.kubernetes.io/name: gapi1
+    app.kubernetes.io/managed-by: struct8
+    app.kubernetes.io/instance: infra1
+    cloudman.io/user: rmay-struct
+  namespace: infra1
+  annotations:
+    argocd.argoproj.io/sync-wave: "5"
+spec:
+  gatewayClassName: kong1-class
+  listeners:
+    - name: g-api1
+      port: 80
+      protocol: HTTP
+      allowedRoutes:
+        namespaces:
+          from: All
+        kinds:
+          - group: gateway.networking.k8s.io
+            kind: HTTPRoute
