@@ -1,0 +1,27 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: spoke-games1
+  namespace: argocd1
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    app.kubernetes.io/name: spoke-games1
+    app.kubernetes.io/managed-by: struct8
+    app.kubernetes.io/instance: Games1
+    cloudman.io/user: rmay-struct
+  annotations:
+    argocd.argoproj.io/sync-wave: "-10"
+spec:
+  project: proj2
+  source:
+    repoURL: "https://github.com/Struct8/TestArgo.git"
+    targetRevision: HEAD
+    path: 378780514943/Games1/templates
+  destination:
+    name: spoke
+    namespace: gamestest1
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

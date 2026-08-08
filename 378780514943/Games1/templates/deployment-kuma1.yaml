@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kuma1
+  labels:
+    app.kubernetes.io/name: kuma1
+    app.kubernetes.io/managed-by: struct8
+    app.kubernetes.io/instance: Games1
+    cloudman.io/user: rmay-struct
+  namespace: gamestest1
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    spec:
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      serviceAccountName: deployment-kuma1-v1-sa
+      containers:
+        - image: "louislam/uptime-kuma:1"
+          imagePullPolicy: IfNotPresent
+          name: uptime-kuma
+          stdin: false
+          stdinOnce: false
+          tty: false
+          ports:
+            - containerPort: 3001
+              name: http
+              protocol: TCP
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+            limits:
+              cpu: "200m"
+              memory: "512Mi"
+          volumeMounts:
+            - name: pvc1
+              mountPath: /app/data
+      volumes:
+        - name: pvc1
+          persistentVolumeClaim:
+            claimName: pvc1
+    metadata:
+      labels:
+        app.kubernetes.io/name: kuma1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: kuma1
