@@ -26,7 +26,7 @@ spec:
           image: "ghcr.io/struct8/k8s-agent:0.6.0"
           env:
             - name: CLUSTER_ID
-              value: "clu_A5_dk5P0vzqtx3sg6okXKQ"
+              value: "clu_WmEBLak_kbmc5fAx91rnDg"
             - name: CLUSTER_API_KEY
               valueFrom:
                 secretKeyRef:
