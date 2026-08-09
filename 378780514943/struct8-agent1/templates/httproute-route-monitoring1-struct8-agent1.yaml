@@ -1,0 +1,29 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: route-monitoring1-struct8-agent1
+  namespace: struct8-agent1
+  labels:
+    struct8.io/origin: route-monitoring1
+    app.kubernetes.io/name: route-monitoring1-struct8-agent1
+    app.kubernetes.io/managed-by: struct8
+    app.kubernetes.io/instance: struct8-agent1
+    cloudman.io/user: rmay-struct
+  annotations:
+    argocd.argoproj.io/sync-wave: "5"
+spec:
+  parentRefs:
+    - name: gapi1
+      namespace: infra1
+      sectionName: g-api1
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: struct8-agent1-svc
+          namespace: struct8-agent1
+          port: 80
+  hostnames:
+    - agent.k8s.admin.billingpay.com.br

@@ -1,0 +1,17 @@
+apiVersion: monitoring.coreos.com/v1
+kind: Prometheus
+metadata:
+  name: prometheus1
+  labels:
+    app.kubernetes.io/name: prometheus1
+    app.kubernetes.io/managed-by: struct8
+    app.kubernetes.io/instance: struct8-agent1
+    cloudman.io/user: rmay-struct
+  namespace: struct8-agent1
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  replicas: 1
+  serviceAccountName: prometheus-prometheus1-sa
+  serviceMonitorSelector: {}
+  serviceMonitorNamespaceSelector: {}

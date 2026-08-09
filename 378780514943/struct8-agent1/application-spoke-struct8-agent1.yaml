@@ -1,0 +1,27 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: spoke-struct8-agent1
+  namespace: argocd1
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    app.kubernetes.io/name: spoke-struct8-agent1
+    app.kubernetes.io/managed-by: struct8
+    app.kubernetes.io/instance: struct8-agent1
+    cloudman.io/user: rmay-struct
+  annotations:
+    argocd.argoproj.io/sync-wave: "-10"
+spec:
+  project: proj2
+  source:
+    repoURL: "https://github.com/Struct8/TestArgo.git"
+    targetRevision: HEAD
+    path: 378780514943/struct8-agent1/templates
+  destination:
+    name: spoke
+    namespace: struct8-agent1
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
