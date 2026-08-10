@@ -33,7 +33,7 @@ spec:
                   name: struct8-agent-secret
                   key: CLUSTER_API_KEY
             - name: WORKER_BASE_URL
-              value: "https://struct8-collab-scoped2-dev.rbpmconsulting.workers.dev"
+              value: "https://dev.k8s.cf.struct8.com"
             - name: PROMETHEUS_URL
               value: "http://prometheus-operated.struct8-agent:9090"
             - name: LISTEN_ADDR
