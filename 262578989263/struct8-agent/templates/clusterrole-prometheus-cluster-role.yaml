@@ -1,0 +1,24 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: prometheus-cluster-role
+  labels:
+    app.kubernetes.io/name: prometheus-cluster-role
+    app.kubernetes.io/managed-by: struct8
+    app.kubernetes.io/instance: struct8-agent
+    cloudman.io/creator: rmay-struct
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - nodes
+      - nodes/metrics
+      - services
+      - endpoints
+      - pods
+    verbs:
+      - get
+      - list
+      - watch

@@ -1,0 +1,151 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: struct8-agent-cluster-role
+  labels:
+    app.kubernetes.io/name: struct8-agent-cluster-role
+    app.kubernetes.io/managed-by: struct8
+    app.kubernetes.io/instance: struct8-agent
+    cloudman.io/creator: rmay-struct
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - configmaps
+      - endpoints
+      - limitranges
+      - namespaces
+      - nodes
+      - persistentvolumeclaims
+      - persistentvolumes
+      - pods
+      - resourcequotas
+      - serviceaccounts
+      - services
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - apps
+    resources:
+      - daemonsets
+      - deployments
+      - replicasets
+      - statefulsets
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - argoproj.io
+    resources:
+      - applications
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - autoscaling
+    resources:
+      - horizontalpodautoscalers
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - batch
+    resources:
+      - cronjobs
+      - jobs
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - configuration.konghq.com
+    resources:
+      - kongclusterplugins
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - gateway-operator.konghq.com
+    resources:
+      - gatewayconfigurations
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - gateway.networking.k8s.io
+    resources:
+      - gateways
+      - httproutes
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - grafana.integreatly.org
+    resources:
+      - grafanas
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - monitoring.coreos.com
+    resources:
+      - prometheuses
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - rabbitmq.com
+    resources:
+      - queues
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - storage.k8s.io
+    resources:
+      - storageclasses
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - ""
+    resources:
+      - pods/log
+    verbs:
+      - get
+  - apiGroups:
+      - apps
+    resources:
+      - daemonsets
+      - deployments
+      - statefulsets
+    verbs:
+      - patch
+  - apiGroups:
+      - apps
+    resources:
+      - deployments/scale
+      - statefulsets/scale
+    verbs:
+      - patch
+      - update
+  - apiGroups:
+      - ""
+    resources:
+      - pods
+    verbs:
+      - delete
