@@ -44,6 +44,8 @@ spec:
               value: "checkoutservice-svc:5050"
             - name: AD_SERVICE_ADDR
               value: "adservice-svc:9555"
+            - name: SHOPPING_ASSISTANT_SERVICE_ADDR
+              value: "shoppingassistantservice-svc:80"
             - name: ENABLE_PROFILER
               value: "0"
             - name: PRODUCTCATALOGSERVICE_HOST
