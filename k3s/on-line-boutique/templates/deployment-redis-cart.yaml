@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-cart
+  labels:
+    app.kubernetes.io/name: redis-cart
+    app.kubernetes.io/managed-by: struct8
+    app.kubernetes.io/instance: on-line-boutique
+    cloudman.io/creator: Anderson-Dutra
+  namespace: online-boutique
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  minReadySeconds: 0
+  paused: false
+  progressDeadlineSeconds: 0
+  replicas: 1
+  revisionHistoryLimit: 0
+  strategy:
+    type: RollingUpdate
+  template:
+    spec:
+      automountServiceAccountToken: false
+      restartPolicy: Always
+      shareProcessNamespace: false
+      terminationGracePeriodSeconds: 30
+      serviceAccountName: deployment-redis-cart-v1-sa
+      volumes:
+        - name: redis-data
+          emptyDir: {}
+      containers:
+        - image: "redis:alpine"
+          imagePullPolicy: Always
+          name: redis
+          livenessProbe:
+            tcpSocket:
+              port: 6379
+          ports:
+            - containerPort: 6379
+              name: redis
+          readinessProbe:
+            tcpSocket:
+              port: 6379
+          resources:
+            requests:
+              cpu: "70m"
+              memory: "200Mi"
+            limits:
+              cpu: "125m"
+              memory: "256Mi"
+          securityContext:
+            allowPrivilegeEscalation: false
+            privileged: false
+            readOnlyRootFilesystem: false
+            runAsNonRoot: false
+          volumeMounts:
+            - name: redis-data
+              mountPath: /data
+    metadata:
+      labels:
+        app.kubernetes.io/name: redis-cart
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: redis-cart

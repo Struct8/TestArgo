@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: emailservice-svc
+  namespace: online-boutique
+  labels:
+    app.kubernetes.io/name: emailservice-svc
+    app.kubernetes.io/managed-by: struct8
+    app.kubernetes.io/instance: on-line-boutique
+    cloudman.io/creator: Anderson-Dutra
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  selector:
+    app.kubernetes.io/name: emailservice
+  ports:
+    - name: port-8080
+      port: 8080
+      targetPort: 8080
+      protocol: TCP

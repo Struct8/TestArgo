@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-loadgenerator-to-frontend-8080
+  namespace: online-boutique
+  labels:
+    app.kubernetes.io/name: allow-loadgenerator-to-frontend-8080
+    app.kubernetes.io/managed-by: struct8
+    app.kubernetes.io/instance: on-line-boutique
+    cloudman.io/creator: Anderson-Dutra
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: frontend
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: loadgenerator
+      ports:
+        - protocol: TCP
+          port: 8080

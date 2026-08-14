@@ -1,0 +1,97 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: checkoutservice
+  labels:
+    app.kubernetes.io/name: checkoutservice
+    app.kubernetes.io/managed-by: struct8
+    app.kubernetes.io/instance: on-line-boutique
+    cloudman.io/creator: Anderson-Dutra
+  namespace: online-boutique
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  minReadySeconds: 0
+  paused: false
+  progressDeadlineSeconds: 0
+  replicas: 1
+  revisionHistoryLimit: 0
+  strategy:
+    type: RollingUpdate
+  template:
+    spec:
+      automountServiceAccountToken: false
+      restartPolicy: Always
+      shareProcessNamespace: false
+      terminationGracePeriodSeconds: 30
+      serviceAccountName: deployment-checkoutservice-v1-sa
+      containers:
+        - image: "us-central1-docker.pkg.dev/online-boutique-ci/microservices-demo/checkoutservice:v0.10.6"
+          imagePullPolicy: Always
+          name: checkoutservice
+          env:
+            - name: PORT
+              value: "5050"
+            - name: PRODUCT_CATALOG_SERVICE_ADDR
+              value: "productcatalogservice-svc:3550"
+            - name: SHIPPING_SERVICE_ADDR
+              value: "shippingservice-svc:50051"
+            - name: PAYMENT_SERVICE_ADDR
+              value: "paymentservice-svc:50051"
+            - name: EMAIL_SERVICE_ADDR
+              value: "emailservice-svc:8080"
+            - name: CURRENCY_SERVICE_ADDR
+              value: "currencyservice-svc:7000"
+            - name: CART_SERVICE_ADDR
+              value: "cartservice-svc:7070"
+            - name: PRODUCTCATALOGSERVICE_HOST
+              value: "productcatalogservice-svc"
+            - name: PRODUCTCATALOGSERVICE_PORT
+              value: "3550"
+            - name: SHIPPINGSERVICE_HOST
+              value: "shippingservice-svc"
+            - name: SHIPPINGSERVICE_PORT
+              value: "50051"
+            - name: PAYMENTSERVICE_HOST
+              value: "paymentservice-svc"
+            - name: PAYMENTSERVICE_PORT
+              value: "50051"
+            - name: EMAILSERVICE_HOST
+              value: "emailservice-svc"
+            - name: EMAILSERVICE_PORT
+              value: "8080"
+            - name: CURRENCYSERVICE_HOST
+              value: "currencyservice-svc"
+            - name: CURRENCYSERVICE_PORT
+              value: "7000"
+            - name: CARTSERVICE_HOST
+              value: "cartservice-svc"
+            - name: CARTSERVICE_PORT
+              value: "7070"
+          livenessProbe:
+            grpc:
+              port: 5050
+          ports:
+            - containerPort: 5050
+              name: grpc
+          readinessProbe:
+            grpc:
+              port: 5050
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "64Mi"
+            limits:
+              cpu: "200m"
+              memory: "128Mi"
+          securityContext:
+            allowPrivilegeEscalation: false
+            privileged: false
+            readOnlyRootFilesystem: false
+            runAsNonRoot: false
+    metadata:
+      labels:
+        app.kubernetes.io/name: checkoutservice
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: checkoutservice

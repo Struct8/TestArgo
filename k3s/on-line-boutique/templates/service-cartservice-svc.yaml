@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: cartservice-svc
+  namespace: online-boutique
+  labels:
+    app.kubernetes.io/name: cartservice-svc
+    app.kubernetes.io/managed-by: struct8
+    app.kubernetes.io/instance: on-line-boutique
+    cloudman.io/creator: Anderson-Dutra
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  selector:
+    app.kubernetes.io/name: cartservice
+  ports:
+    - name: port-7070
+      port: 7070
+      targetPort: 7070
+      protocol: TCP
