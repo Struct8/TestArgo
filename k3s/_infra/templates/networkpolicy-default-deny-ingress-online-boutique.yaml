@@ -1,0 +1,16 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-ingress-online-boutique
+  namespace: online-boutique
+  labels:
+    app.kubernetes.io/name: default-deny-ingress-online-boutique
+    app.kubernetes.io/managed-by: struct8
+    app.kubernetes.io/instance: k3s
+    cloudman.io/creator: Anderson-Dutra
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress

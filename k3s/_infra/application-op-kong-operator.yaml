@@ -1,0 +1,29 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: op-kong-operator
+  namespace: argocd2
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    app.kubernetes.io/name: op-kong-operator
+    app.kubernetes.io/managed-by: struct8
+    app.kubernetes.io/instance: k3s
+    cloudman.io/creator: Anderson-Dutra
+  annotations:
+    argocd.argoproj.io/sync-wave: "-10"
+spec:
+  project: default
+  source:
+    repoURL: "https://charts.konghq.com"
+    chart: kong-operator
+    targetRevision: 1.3.1
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: kong-operator-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
