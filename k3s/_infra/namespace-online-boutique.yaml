@@ -6,6 +6,6 @@ metadata:
     app.kubernetes.io/name: online-boutique
     app.kubernetes.io/managed-by: struct8
     app.kubernetes.io/instance: k3s
-    cloudman.io/creator: rmay-struct
+    cloudman.io/creator: Templates
   annotations:
     argocd.argoproj.io/sync-wave: "-20"

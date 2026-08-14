@@ -7,7 +7,7 @@ metadata:
     app.kubernetes.io/name: allow-ingress-to-struct8-agent-k3s
     app.kubernetes.io/managed-by: struct8
     app.kubernetes.io/instance: k3s
-    cloudman.io/creator: Anderson-Dutra
+    cloudman.io/creator: Templates
   annotations:
     argocd.argoproj.io/sync-wave: "0"
 spec:
