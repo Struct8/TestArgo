@@ -1,0 +1,37 @@
+apiVersion: gateway-operator.konghq.com/v1beta1
+kind: GatewayConfiguration
+metadata:
+  name: prod-config
+  namespace: gateway
+  labels:
+    app.kubernetes.io/name: kong1
+    app.kubernetes.io/managed-by: struct8
+    app.kubernetes.io/instance: gateway
+    cloudman.io/creator: Templates
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  dataPlaneOptions:
+    network:
+      services:
+        ingress:
+          type: LoadBalancer
+          name: kong-proxy-static
+    deployment:
+      podTemplateSpec:
+        spec:
+          restartPolicy: Always
+          shareProcessNamespace: false
+          terminationGracePeriodSeconds: 30
+          serviceAccountName: deployment-kong1-v1-sa
+          containers:
+            - imagePullPolicy: Always
+              name: proxy
+              securityContext:
+                allowPrivilegeEscalation: false
+                privileged: false
+                readOnlyRootFilesystem: false
+                runAsNonRoot: false
+        metadata:
+          labels:
+            app.kubernetes.io/name: kong1
